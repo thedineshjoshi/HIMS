@@ -28,5 +28,56 @@ namespace HIMS.Data
         public DbSet<Bill> Bills { get; set; }
         public DbSet<LabTest>LabTests { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Doctor)
+                .WithMany(d => d.Appointments)
+                .HasForeignKey(a => a.DoctorId);
+
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Patient)
+                .WithMany(p => p.Appointments)
+                .HasForeignKey(a => a.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MedicalRecord>()
+                .HasOne(m => m.Doctor)
+                .WithMany(d => d.MedicalRecords)
+                .HasForeignKey(m => m.DoctorId);
+
+            modelBuilder.Entity<MedicalRecord>()
+                .HasOne(mr => mr.Patient)
+                .WithMany(p => p.MedicalRecords)
+                .HasForeignKey(mr => mr.PatientId);
+
+            modelBuilder.Entity<LabTest>()
+                .HasOne(lt => lt.Patient)
+                .WithMany()
+                .HasForeignKey(lt => lt.PatientId);
+
+            modelBuilder.Entity<LabTest>()
+                .HasOne(lt => lt.Doctor)
+                .WithMany()
+                .HasForeignKey(lt => lt.DoctorId);
+
+            modelBuilder.Entity<InPatientAdmission>()
+                .HasOne(ipa => ipa.WardRoom)
+                .WithMany(wr => wr.Admissions)
+                .HasForeignKey(ipa => ipa.WardRoomId);
+
+            modelBuilder.Entity<Prescription>()
+                .HasOne(pr => pr.Patient)
+                .WithMany(p => p.Prescriptions)
+                .HasForeignKey(pr => pr.PatientId);
+
+            modelBuilder.Entity<Prescription>()
+                .HasOne(pr => pr.Doctor)
+                .WithMany() 
+                .HasForeignKey(pr => pr.DoctorId);
+        }
+
     }
 }

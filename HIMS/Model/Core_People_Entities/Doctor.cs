@@ -1,4 +1,6 @@
-﻿namespace HIMS.Model.Core_People_Entities
+﻿using HIMS.Model.Clinical_And_Scheduling_Entities;
+
+namespace HIMS.Model.Core_People_Entities
 {
     public class Doctor
     {
@@ -7,9 +9,11 @@
         public string LastName { get; set; }
         public string Role { get; set; }
         public DateOnly HiringDate { get; set; }
-        public string Salary { get; set; }
+        public double Salary { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public virtual ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; }
     }
 }

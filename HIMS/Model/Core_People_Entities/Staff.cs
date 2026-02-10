@@ -7,7 +7,7 @@
         public string LastName { get; set; }
         public string Role { get; set; }
         public DateOnly HiringDate { get; set; }
-        public string Salary { get; set; }
+        public double Salary { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
