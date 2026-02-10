@@ -5,7 +5,6 @@
         public Guid Id { get; set; }
         public Guid PatientId { get; set; }
         public Guid DoctorId { get; set; }
-        public Guid StaffId { get; set; }
         public string MedicationName { get; set; }
         public string Dosage { get; set; }
         public string Frequency { get; set; }
