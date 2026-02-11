@@ -1,0 +1,59 @@
+.top-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 97%;
+  height: 60px;
+  background: linear-gradient(90deg, #1976d2, #1565c0);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  color: white;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.app-name {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.close-btn:hover {
+  transform: rotate(90deg);
+  color: #ffc107;
+}
+
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.active-tab {
+  background: #ffeb3b;
+  color: black;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.icon, .admin {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.icon:hover, .admin:hover {
+  color: #ffeb3b;
+}
