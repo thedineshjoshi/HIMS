@@ -4,7 +4,7 @@ import { LayoutComponent } from '../layout/layout.component';
 
 @Component({
   selector: 'app-staff',
-  imports: [LayoutComponent, RouterOutlet, ],
+  imports: [RouterOutlet, ],
   templateUrl: './staff.component.html',
   styleUrl: './staff.component.css'
 })

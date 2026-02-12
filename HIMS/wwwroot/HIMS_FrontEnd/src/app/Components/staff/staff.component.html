@@ -1,4 +1,128 @@
-<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reprehenderit obcaecati non nostrum, vero aperiam natus harum quam, debitis totam repudiandae, eveniet officiis molestiae nesciunt maiores iure cupiditate accusantium repellat velit!</p>
-<app-layout></app-layout>
+<button type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#employeeModal">
+  Add Employee
+</button>
+
+<div class="modal fade" id="employeeModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Employee</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" >
+         <form>
+          <div class="row g-3">
+            <div class="col-md-2">
+              <label class="form-label">Salutation</label>
+              <select class="form-select">
+                <option selected disabled>Select</option>
+                <option>Mr</option>
+                <option>Mrs</option>
+                <option>Miss</option>
+                <option>Dr</option>
+                <option>Prof</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-control" required>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Middle Name</label>
+              <input type="text" class="form-control">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-control" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" class="form-control">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Gender</label>
+              <select class="form-select">
+                <option selected disabled>Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Blood Group</label>
+              <select class="form-select">
+                <option selected disabled>Select</option>
+                <option>A+</option>
+                <option>A-</option>
+                <option>B+</option>
+                <option>B-</option>
+                <option>O+</option>
+                <option>O-</option>
+                <option>AB+</option>
+                <option>AB-</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Contact Number</label>
+              <input type="tel" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Role</label>
+              <select class="form-select">
+                <option selected disabled>Select Role</option>
+                <option>Doctor</option>
+                <option>Nurse</option>
+                <option>Admin</option>
+                <option>Receptionist</option>
+                <option>Pharmacist</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Hiring Date</label>
+              <input type="date" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Salary</label>
+              <input type="number" class="form-control">
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">
+          Save
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
 
 <router-outlet></router-outlet>

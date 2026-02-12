@@ -1,4 +1,5 @@
 ﻿using HIMS.Model.Core_People_Entities;
+using HIMS.Model.Enums;
 
 namespace HIMS.Model.Clinical_And_Scheduling_Entities
 {

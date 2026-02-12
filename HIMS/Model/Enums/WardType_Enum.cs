@@ -1,4 +1,4 @@
-﻿namespace HIMS.Model.Facility_And_Operational_Entities
+﻿namespace HIMS.Model.Enums
 {
     public enum WardType_Enum
     {

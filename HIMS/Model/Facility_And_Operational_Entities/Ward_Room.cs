@@ -1,4 +1,6 @@
-﻿namespace HIMS.Model.Facility_And_Operational_Entities
+﻿using HIMS.Model.Enums;
+
+namespace HIMS.Model.Facility_And_Operational_Entities
 {
     public class Ward_Room
     {

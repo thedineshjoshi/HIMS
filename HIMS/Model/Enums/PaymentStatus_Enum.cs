@@ -1,4 +1,4 @@
-﻿namespace HIMS.Model.Invoice_And_Bill
+﻿namespace HIMS.Model.Enums
 {
     public enum PaymentStatus_Enum
     {

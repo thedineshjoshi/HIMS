@@ -1,10 +1,9 @@
-﻿namespace HIMS.Model.Clinical_And_Scheduling_Entities
+﻿namespace HIMS.Model.Enums
 {
     public enum AppointmentStatus_Enum
     {
         Scheduled,
         Completed,
         Canceled
-
     }
 }

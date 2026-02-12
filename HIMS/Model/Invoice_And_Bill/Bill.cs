@@ -1,4 +1,5 @@
 ﻿using HIMS.Model.Core_People_Entities;
+using HIMS.Model.Enums;
 
 namespace HIMS.Model.Invoice_And_Bill
 {
