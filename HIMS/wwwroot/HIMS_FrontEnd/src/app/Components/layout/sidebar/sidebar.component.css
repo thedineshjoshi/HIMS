@@ -8,6 +8,7 @@
   color: white;
   overflow-y: auto;
   padding: 15px 0;
+  z-index: 1000;
 }
 
 .search-box {

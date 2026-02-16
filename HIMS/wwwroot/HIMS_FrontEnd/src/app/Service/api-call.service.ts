@@ -12,16 +12,16 @@ export class ApiCallService {
   addStaff(staff:Staff):Observable<any>{
     return this.http.post(`${this.staffUrl}`,staff,{responseType:'json'});
   }
-  getAllStaffs():Observable<any>{
-    return this.http.get(`${this.staffUrl}`,{responseType:'json'});
+  getAllStaffs(page:number,size:number):Observable<any>{
+    return this.http.get(`${this.staffUrl}?pageNumber=${page}&pageSize=${size}`,{responseType:'json'});
   }
   getStaffById(id:string):Observable<any>{
     return this.http.get(`${this.staffUrl}/${id}`,{responseType:'json'});
   }
-  UpdateStaff(id:string, staff:Staff):Observable<any>{
-    return this.http.patch(`${this.staffUrl}/${id}`,staff,{responseType:'json'});
+  updateStaff(id:string, staff:Staff):Observable<any>{
+    return this.http.put(`${this.staffUrl}/${id}`,staff,{responseType:'json'});
   }
-  DeleteStaff(id:string):Observable<any>{
+  deleteStaff(id:string):Observable<any>{
     return this.http.delete(`${this.staffUrl}/${id}`,{responseType:'json'})
   }
    

@@ -1,4 +1,5 @@
-﻿using HIMS.DTO.Response;
+﻿using HIMS.DTO.Pagination;
+using HIMS.DTO.Response;
 using HIMS.DTO.Staff;
 using HIMS.Interfaces;
 using HIMS.Model.Core_People_Entities;
@@ -19,10 +20,11 @@ namespace HIMS.Controllers
         }
         // GET: api/<StaffController>
         [HttpGet]
-        public async Task<IEnumerable<GetStaffDto>> GetAllStaff()
+        public async Task<ActionResult<PagedResponseDto<GetStaffDto>>> GetAllStaff([FromQuery] PagingRequestDto request)
         {
-            
-            return await staffService.GetAllStaffAsync();;
+            var pagedStaff = await staffService.GetAllStaffAsync(request);
+
+            return Ok(pagedStaff);
         }
 
         // GET api/<StaffController>/5

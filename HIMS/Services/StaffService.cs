@@ -1,4 +1,5 @@
 ﻿using HIMS.Data;
+using HIMS.DTO.Pagination;
 using HIMS.DTO.Response;
 using HIMS.DTO.Staff;
 using HIMS.Interfaces;
@@ -21,26 +22,41 @@ namespace HIMS.Services
             this.db = db;
         }
 
-        public async Task<IEnumerable<GetStaffDto>> GetAllStaffAsync()
+        public async Task<PagedResponseDto<GetStaffDto>> GetAllStaffAsync(PagingRequestDto request)
         {
-            return await db.Staffs.Where(s => s.IsActive==true).Select(s=> new GetStaffDto
+            var query = db.Staffs.Where(s => s.IsActive);
+            var totalRecords = await query.CountAsync();
+            var requestedStaffs = await query
+        .OrderBy(s => s.FirstName) // Optional: always order for consistent paging
+        .Skip((request.PageNumber - 1) * request.PageSize)
+        .Take(request.PageSize)
+        .Select(s => new GetStaffDto
+        {
+            Id = s.Id,
+            FirstName = s.FirstName,
+            MiddleName = s.MiddleName,
+            LastName = s.LastName,
+            Address = s.Address,
+            ContactNumber = s.ContactNumber,
+            Email = s.Email,
+            DateOfBirth = s.DateOfBirth,
+            Salutation = s.Salutation,
+            Role = s.Role,
+            HiringDate = s.HiringDate,
+            Salary = s.Salary,
+            Gender = s.Gender,
+            CreatedOn = s.CreatedOn,
+            UpdatedOn = s.UpdatedOn
+        })
+        .ToListAsync();
+            var response = new PagedResponseDto<GetStaffDto>
             {
-                Id = s.Id,
-                FirstName = s.FirstName,
-                MiddleName = s.MiddleName,
-                LastName = s.LastName,
-                Address = s.Address,
-                ContactNumber = s.ContactNumber,
-                Email = s.Email,
-                DateOfBirth = s.DateOfBirth,
-                Salutation = s.Salutation,
-                Role = s.Role,
-                HiringDate = s.HiringDate,
-                Salary = s.Salary,
-                Gender = s.Gender,
-                CreatedOn = s.CreatedOn,
-                UpdatedOn = s.UpdatedOn
-            }).ToListAsync();
+                Items = requestedStaffs,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize,
+                TotalRecords = totalRecords
+            };
+            return response;
         }
 
         public async Task<GetStaffDto> GetStaffByIdAsync(Guid id)
