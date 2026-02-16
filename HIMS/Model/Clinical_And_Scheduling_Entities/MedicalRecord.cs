@@ -2,9 +2,8 @@
 
 namespace HIMS.Model.Clinical_And_Scheduling_Entities
 {
-    public class MedicalRecord
+    public class MedicalRecord:BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid PatientId { get; set; }
         public virtual Patient Patient { get; set; }
         public Guid DoctorId { get; set; }
@@ -14,8 +13,6 @@ namespace HIMS.Model.Clinical_And_Scheduling_Entities
         public string TreatmentPlan { get; set; }
         public string Medications { get; set; }
         public DateTime RecordDate { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
         public virtual ICollection<Prescription> Prescriptions { get; set; }
     }
 }

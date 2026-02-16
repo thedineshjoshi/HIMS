@@ -2,9 +2,8 @@
 
 namespace HIMS.Model.Lab_Entities
 {
-    public class LabTest
+    public class LabTest:BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid PatientId { get; set; }
         public virtual Patient Patient { get; set; }
         public Guid DoctorId { get; set; }
@@ -13,7 +12,6 @@ namespace HIMS.Model.Lab_Entities
         public string TestType { get; set; }
         public string TestResults { get; set; }
         public DateTime TestDate { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public bool isActive { get; set; }
     }
 }

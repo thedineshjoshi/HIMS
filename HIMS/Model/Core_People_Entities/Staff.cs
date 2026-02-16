@@ -9,7 +9,6 @@ namespace HIMS.Model.Core_People_Entities
         public Role_Enum Role { get; set; }
         public DateOnly HiringDate { get; set; }
         public double Salary { get; set; }
-        public bool IsActive { get; set; }
     }
 
 }

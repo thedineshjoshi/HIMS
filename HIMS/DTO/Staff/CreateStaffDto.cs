@@ -1,6 +1,8 @@
-﻿namespace HIMS.DTO.Patient
+﻿using HIMS.Model.Enums;
+
+namespace HIMS.DTO.Staff
 {
-    public class CreatePatientDto
+    public class CreateStaffDto
     {
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -9,8 +11,11 @@
         public string Address { get; set; }
         public string ContactNumber { get; set; }
         public string Email { get; set; }
-        public string BloodGroup { get; set; }
         public DateOnly DateOfBirth { get; set; }
+        public string Salutation { get; set; }
+        public Role_Enum Role { get; set; }
+        public DateOnly HiringDate { get; set; }
+        public double Salary { get; set; }
         public Guid CreatedBy { get; set; }
     }
 }

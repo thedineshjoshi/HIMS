@@ -41,54 +41,16 @@ namespace HIMS.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreatePatientDto dto)
         {
-                var patient = new Patient
-                {
-                    Id=Guid.NewGuid(),
-                    FirstName = dto.FirstName,
-                    MiddleName = dto.MiddleName,
-                    LastName = dto.LastName,
-                    Gender = dto.Gender,
-                    Address = dto.Address,
-                    ContactNumber = dto.ContactNumber,
-                    Email = dto.Email,
-                    BloodGroup = dto.BloodGroup,
-                    DateOfBirth = dto.DateOfBirth,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                };
-
-                var createdPatient = await _patientService.AddPatientAsync(patient);
-
-                return CreatedAtAction(nameof(GetById),
-                    new { id = createdPatient.Id },
-                    createdPatient);
+                var createdPatient = await _patientService.AddPatientAsync(dto);
+                return Ok(createdPatient);
         }
 
         // PUT api/<PatientController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdatePatientDto dto)
         {
-                var patient = new Patient
-                {
-                    FirstName = dto.FirstName,
-                    MiddleName = dto.MiddleName,
-                    LastName = dto.LastName,
-                    Gender = dto.Gender,
-                    Address = dto.Address,
-                    ContactNumber = dto.ContactNumber,
-                    Email = dto.Email,
-                    BloodGroup = dto.BloodGroup,
-                    DateOfBirth = dto.DateOfBirth,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                };
-
-                var updated = await _patientService.UpdatePatientAsync(id, patient);
-
-                if (!updated)
-                    return NotFound($"Patient with ID {id} not found.");
-
-                return NoContent();
+            var updatedPatient = await _patientService.UpdatePatientAsync(id, dto);
+                return Ok(updatedPatient);
         }
 
         // DELETE api/<PatientController>/5
@@ -96,11 +58,7 @@ namespace HIMS.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
                 var deleted = await _patientService.DeletePatientAsync(id);
-
-                if (!deleted)
-                    return NotFound($"Patient with ID {id} not found.");
-
-                return NoContent();
+                return Ok(deleted);
         }
     }
 }

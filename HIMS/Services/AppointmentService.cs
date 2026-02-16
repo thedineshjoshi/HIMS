@@ -1,5 +1,6 @@
 ﻿using HIMS.Data;
 using HIMS.DTO.Appointment;
+using HIMS.DTO.Response;
 using HIMS.Interfaces;
 using HIMS.Model.Clinical_And_Scheduling_Entities;
 using HIMS.Model.Core_People_Entities;
@@ -15,9 +16,9 @@ namespace HIMS.Services
         {
             this.db = db;
         }
-        public async Task<List<GetAppointmentDto>> GetAllAppointmentsAsync()
+        public async Task<IEnumerable<GetAppointmentDto>> GetAllAppointmentsAsync()
         {
-            return await db.Appointments.Select(a => new GetAppointmentDto
+            return await db.Appointments.Where(a => a.IsActive == true).Select(a => new GetAppointmentDto
             {
                 Id = a.Id,
                 AppointmentDate = a.AppointmentDate,
@@ -36,7 +37,7 @@ namespace HIMS.Services
         
         public async Task<GetAppointmentDto?> GetAppointmentByIdAsync(Guid id)
         {
-            return await db.Appointments
+            return await db.Appointments.Where(a=>a.IsActive==true && a.Id == id)
                 .Select(a => new GetAppointmentDto
                 {
                     Id = a.Id,
@@ -51,7 +52,7 @@ namespace HIMS.Services
                     DoctorId = a.DoctorId,
                     DoctorName = $"Dr. {a.Doctor.LastName}"
                 })
-                .FirstOrDefaultAsync(a => a.Id == id);
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Patient?> CheckPatientExistsAsync(PatientCheckDto dto)
@@ -65,7 +66,7 @@ namespace HIMS.Services
 
             return patient; 
         }
-        public async Task<Appointment> AddAppointmentAsync(CreateAppointmentDto dto)
+        public async Task<Guid> AddAppointmentAsync(CreateAppointmentDto dto)
         {
             var doctorExists = await db.Doctors.AnyAsync(d => d.Id == dto.DoctorId);
             if (!doctorExists)
@@ -90,14 +91,14 @@ namespace HIMS.Services
                     DateOfBirth = dto.DateOfBirth,
                     BloodGroup = dto.BloodGroup,
                     Email = dto.Email,
-                    Address= dto.Address,
-                    Gender=dto.Gender,
-                    CreatedAt =DateTime.UtcNow,
-                    UpdatedAt=DateTime.UtcNow
+                    Address = dto.Address,
+                    Gender = dto.Gender,
+                    IsActive = true,
+                    CreatedOn = DateTime.Now,
+                    CreatedBy = dto.CreatedBy
                 };
 
                 await db.Patients.AddAsync(patient);
-                await db.SaveChangesAsync();
             }
 
             var appointment = new Appointment
@@ -108,41 +109,56 @@ namespace HIMS.Services
                 AppointmentDate = dto.AppointmentDate,
                 ReasonForVisit = dto.ReasonForVisit,
                 Status = AppointmentStatus_Enum.Scheduled,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                CreatedOn = DateTime.Now,
+                CreatedBy = dto.CreatedBy
             };
 
             await db.Appointments.AddAsync(appointment);
             await db.SaveChangesAsync();
 
-            return appointment;
+            return appointment.Id;
         }
 
-        public async Task<bool> UpdateAppointmentAsync(Guid Id , AppointmentStatus_Enum status)
+        public async Task<ResponseDto> UpdateAppointmentAsync(Guid Id , AppointmentStatus_Enum status)
         {
             var appointment = await db.Appointments.FindAsync(Id);
 
             if (appointment == null)
-                return false;
+                return new ResponseDto
+                {
+                    Success = false,
+                    Message = "Appointment not found.",
+                };
 
             appointment.Status = status;
-            appointment.UpdatedAt = DateTime.UtcNow;
+            appointment.UpdatedOn = DateTime.UtcNow;
 
             await db.SaveChangesAsync();
-            return true;
+            return new ResponseDto
+            {
+                Success = true,
+                Message = "Appointment Updated Successfully",
+            };
         }
 
-        public async Task<bool> DeleteAppointmentAsync(Guid id)
+        public async Task<ResponseDto> DeleteAppointmentAsync(Guid id)
         {
             var appointment = await db.Appointments.FindAsync(id);
 
             if (appointment == null)
-                return false;
-
-            db.Appointments.Remove(appointment);
+                return new ResponseDto
+                {
+                    Success = false,
+                    Message = "Appointment not found.",
+                };
+            ;
+            appointment.IsActive = false;
             await db.SaveChangesAsync();
-
-            return true;
+            return new ResponseDto
+            {
+                Success = true,
+                Message = "Appointment Deleted Successfully",
+            }; ;
         }
     }
 }

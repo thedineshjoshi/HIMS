@@ -1,6 +1,8 @@
-﻿namespace HIMS.Common
+﻿using HIMS.Model.Enums;
+
+namespace HIMS.DTO.Staff
 {
-    public abstract class People
+    public class GetStaffDto
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; }
@@ -10,16 +12,12 @@
         public string Address { get; set; }
         public string ContactNumber { get; set; }
         public string Email { get; set; }
-        public bool IsActive { get; set; }
         public DateOnly DateOfBirth { get; set; }
+        public string Salutation { get; set; }
+        public Role_Enum Role { get; set; }
+        public DateOnly HiringDate { get; set; }
+        public double Salary { get; set; }
         public DateTime CreatedOn { get; set; }
-        public Guid CreatedBy { get; set; }
-        public Guid? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
-        public virtual int GetAge()
-        {
-            return DateTime.Now.Year - DateOfBirth.Year;
-        }
     }
 }

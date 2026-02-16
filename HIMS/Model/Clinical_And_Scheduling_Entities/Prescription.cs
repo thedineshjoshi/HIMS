@@ -2,9 +2,8 @@
 
 namespace HIMS.Model.Clinical_And_Scheduling_Entities
 {
-    public class Prescription
+    public class Prescription:BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid PatientId { get; set; }
         public virtual Patient Patient { get; set; }
         public Guid DoctorId { get; set; }
@@ -15,7 +14,5 @@ namespace HIMS.Model.Clinical_And_Scheduling_Entities
         public string Duration { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
     }
 }

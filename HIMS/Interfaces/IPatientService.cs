@@ -1,14 +1,16 @@
-﻿using HIMS.Model.Core_People_Entities;
+﻿using HIMS.DTO.Patient;
+using HIMS.DTO.Response;
+using HIMS.Model.Core_People_Entities;
 
 namespace HIMS.Interfaces
 {
     public interface IPatientService
     {
-        Task<List<Patient>> GetAllPatientsAsync();
-        Task<Patient?> GetPatientByIdAsync(Guid id);
-        Task<Patient> AddPatientAsync(Patient patient);
-        Task<bool> UpdatePatientAsync(Guid Id, Patient patient);
-        Task<bool> DeletePatientAsync(Guid id);
+        Task<IEnumerable<GetPatientDto>> GetAllPatientsAsync();
+        Task<GetPatientDto?> GetPatientByIdAsync(Guid id);
+        Task<Guid> AddPatientAsync(CreatePatientDto patient);
+        Task<ResponseDto> UpdatePatientAsync(Guid Id, UpdatePatientDto patient);
+        Task<ResponseDto> DeletePatientAsync(Guid id);
 
     }
 }

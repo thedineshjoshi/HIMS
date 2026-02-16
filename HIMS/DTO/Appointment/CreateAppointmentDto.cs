@@ -12,5 +12,6 @@ namespace HIMS.DTO.Appointment
         public string Email { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public string ReasonForVisit { get; set; }
+        public Guid CreatedBy { get; set; }
     }
 }

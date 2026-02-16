@@ -11,5 +11,6 @@
         public string Email { get; set; }
         public string BloodGroup { get; set; }
         public DateOnly DateOfBirth { get; set; }
+        public Guid UpdatedBy { get; set; }
     }
 }

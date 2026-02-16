@@ -32,7 +32,6 @@ namespace HIMS.Controllers
         public async Task<IActionResult> GetAppointmentByIdAsync(Guid id)
         {
             var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
-            if (appointment == null) return NotFound("Appointment not found");
             return Ok(appointment);
         }
 
@@ -42,10 +41,7 @@ namespace HIMS.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var patient = await _appointmentService.CheckPatientExistsAsync(dto);
-            if (patient != null)
-                return Ok(new { exists = true, patientId = patient.Id });
-            else
-                return Ok(new { exists = false });
+            return Ok(patient);
         }
 
 
@@ -58,7 +54,7 @@ namespace HIMS.Controllers
                 return BadRequest(ModelState);
 
             var appointment = await _appointmentService.AddAppointmentAsync(requestAppointment);
-            return Ok();
+            return Ok(appointment);
         }
 
         // PUT api/<AppointmentController>/5
@@ -66,8 +62,7 @@ namespace HIMS.Controllers
         public async Task<IActionResult> UpdateStatus(Guid id, [FromQuery] AppointmentStatus_Enum status)
         {
             var updated = await _appointmentService.UpdateAppointmentAsync(id, status);
-            if (!updated) return NotFound("Appointment not found");
-            return NoContent();
+            return Ok(updated);
         }
 
         // DELETE api/<AppointmentController>/5
@@ -75,8 +70,7 @@ namespace HIMS.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var deleted = await _appointmentService.DeleteAppointmentAsync(id);
-            if (!deleted) return NotFound("Appointment not found");
-            return NoContent();
+            return Ok(deleted);
         }
     }
 }
