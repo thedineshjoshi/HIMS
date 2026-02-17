@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CommonModule } from '@angular/common';
 import { Staff } from '../../Model/Staff';
 
+
 declare var bootstrap: any;
 
 @Component({
@@ -20,12 +21,12 @@ export class StaffComponent implements OnInit {
   addStaffForm!:FormGroup;
   editStaffForm!:FormGroup;
   staffList: any;
-  alertMessage: string = '';
   totalRecords=0;
   pageNumber:any;
-  pageSize=8;
+  pageSize=7;
   totalPages:any;
   currentPage = 1;
+  alertMessage: string = '';
   alertType: string = ''; 
   showAlert: boolean = false;
   ngOnInit(){
@@ -122,7 +123,6 @@ submitStaff() {
 
   const staffData: Staff = this.addStaffForm.value;
   if (this.isEditMode && this.selectedStaffId) {
-    // Update staff
     this.apiCallService.updateStaff(this.selectedStaffId, staffData).subscribe(
       res => {
         this.getAllStaff();
@@ -132,7 +132,6 @@ submitStaff() {
       err => this.showAlertMessage('Failed to update staff!', 'danger')
     );
   } else {
-    // Add staff
     this.apiCallService.addStaff(staffData).subscribe(
       res => {
         this.getAllStaff();

@@ -1,13 +1,17 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './Components/layout/layout.component';
 import { StaffComponent } from './Components/staff/staff.component';
+import { PatientComponent } from './Components/patient/patient.component';
+import { AppointmentComponent } from './Components/appointment/appointment.component';
 
 export const routes: Routes = [
     {
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'staffmanagement', component: StaffComponent },
+      { path: 'staff', component: StaffComponent },
+      {path:'patient',component:PatientComponent},
+      {path:'appointment',component:AppointmentComponent}
       
     ]
 }

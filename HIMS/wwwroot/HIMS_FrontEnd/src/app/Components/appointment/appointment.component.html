@@ -1,0 +1,104 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Appointments</h3>
+    <button class="btn btn-primary" (click)="openModal()">
+      <i class="bi bi-calendar-plus"></i> New Appointment
+    </button>
+  </div>
+
+  <ag-grid-angular
+    style="width: 100%; height: 500px;"
+    class="ag-theme-quartz"
+    [rowData]="rowData"
+    [columnDefs]="columnDefs"
+    [pagination]="true">
+  </ag-grid-angular>
+</div>
+
+<div class="modal fade" id="appointmentModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Book Appointment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form [formGroup]="appointmentForm" (ngSubmit)="submitAppointment()">
+        <div class="modal-body">
+          
+          <h6>Patient Details</h6>
+          <div class="row g-3 mb-4 border-bottom pb-3">
+            <div class="col-md-4">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-control" formControlName="FirstName">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Middle Name</label>
+              <input type="text" class="form-control" formControlName="MiddleName">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-control" formControlName="LastName">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Contact Number</label>
+              <input type="text" class="form-control" formControlName="ContactNumber">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" formControlName="Email">
+            </div>
+             <div class="col-md-4">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" class="form-control" formControlName="DateOfBirth">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Gender</label>
+              <select class="form-select" formControlName="Gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Blood Group</label>
+              <select class="form-select" formControlName="BloodGroup">
+                <option value="A+">A+</option><option value="O+">O+</option>
+                <option value="B+">B+</option><option value="AB+">AB+</option>
+                <option value="A-">A-</option><option value="O-">O-</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Address</label>
+              <input type="text" class="form-control" formControlName="Address">
+            </div>
+          </div>
+
+          <h6>Appointment Details</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Doctor</label>
+              <select class="form-select" formControlName="DoctorId">
+                <option *ngFor="let doc of doctors" [value]="doc.id">
+                  Dr. {{doc.firstName}} {{doc.lastName}} ({{doc.department}})
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Appointment Date & Time</label>
+              <input type="datetime-local" class="form-control" formControlName="AppointmentDate">
+            </div>
+            <div class="col-md-12">
+              <label class="form-label">Reason for Visit</label>
+              <textarea class="form-control" formControlName="ReasonForVisit" rows="2"></textarea>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success" [disabled]="appointmentForm.invalid">Confirm Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,8 @@
 ﻿using HIMS.Data;
+using HIMS.DTO.Pagination;
 using HIMS.DTO.Patient;
 using HIMS.DTO.Response;
+using HIMS.DTO.Staff;
 using HIMS.Interfaces;
 using HIMS.Model.Core_People_Entities;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +17,14 @@ namespace HIMS.Services
             this.db = db;
         }
 
-        public async Task<IEnumerable<GetPatientDto>> GetAllPatientsAsync()
+        public async Task<PagedResponseDto<GetPatientDto>> GetAllPatientsAsync(PagingRequestDto request)
         {
-            return await db.Patients.Where(a => a.IsActive == true).Select(
+            var query = db.Patients.Where(s => s.IsActive);
+            var totalRecords = await query.CountAsync();
+            var requestedPatients = await query
+        .OrderBy(s => s.FirstName)
+        .Skip((request.PageNumber - 1) * request.PageSize)
+        .Take(request.PageSize).Select(
                  a => new GetPatientDto
                 {
                     Id = a.Id,
@@ -36,6 +43,14 @@ namespace HIMS.Services
                     UpdatedOn = a.UpdatedOn
                  }
                 ).ToListAsync();
+            var response = new PagedResponseDto<GetPatientDto>
+            {
+                Items = requestedPatients,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize,
+                TotalRecords = totalRecords
+            };
+            return response;
         }
         public async Task<GetPatientDto?> GetPatientByIdAsync(Guid id)
         {
@@ -76,6 +91,7 @@ namespace HIMS.Services
                 DateOfBirth = patient.DateOfBirth,
                 CreatedOn = DateTime.UtcNow,
                 CreatedBy = patient.CreatedBy,
+                IsActive = true
             };
             await db.Patients.AddAsync(newPatient);
             await db.SaveChangesAsync();

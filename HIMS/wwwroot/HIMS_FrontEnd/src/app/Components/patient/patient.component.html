@@ -1,0 +1,127 @@
+<button type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#PatientModal">
+  Add Patient
+</button>
+
+<div class="modal fade" id="PatientModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ isEditMode ? 'Edit Patient Profile' : 'Register New Patient' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="patientForm" (ngSubmit)="submitPatient()">
+          <div class="row g-3">
+            
+            <div class="col-md-4">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-control" formControlName="FirstName">
+              <div *ngIf="patientForm.get('FirstName')?.touched && patientForm.get('FirstName')?.invalid" class="text-danger">
+                <small *ngIf="patientForm.get('FirstName')?.errors?.['required']">First Name is required.</small>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Middle Name</label>
+              <input type="text" class="form-control" formControlName="MiddleName">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-control" formControlName="LastName">
+              <div *ngIf="patientForm.get('LastName')?.touched && patientForm.get('LastName')?.invalid" class="text-danger">
+                <small *ngIf="patientForm.get('LastName')?.errors?.['required']">Last Name is required.</small>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" class="form-control" formControlName="DateOfBirth">
+              <div *ngIf="patientForm.get('DateOfBirth')?.touched && patientForm.get('DateOfBirth')?.invalid" class="text-danger">
+                <small *ngIf="patientForm.get('DateOfBirth')?.errors?.['required']">DOB is required.</small>
+                <small *ngIf="patientForm.get('DateOfBirth')?.errors?.['invalidDOB']">Date of Birth cannot be in the future.</small>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Gender</label>
+              <select class="form-select" formControlName="Gender">
+                <option value="" selected disabled>Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Blood Group</label>
+              <select class="form-select" formControlName="BloodGroup">
+                <option value="" selected disabled>Select</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option>O+</option><option>O-</option>
+                <option>AB+</option><option>AB-</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" formControlName="Email">
+              <div *ngIf="patientForm.get('Email')?.touched && patientForm.get('Email')?.invalid" class="text-danger">
+                <small *ngIf="patientForm.get('Email')?.errors?.['email']">Invalid email format.</small>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Contact Number</label>
+              <input type="tel" class="form-control" formControlName="ContactNumber">
+              <div *ngIf="patientForm.get('ContactNumber')?.touched && patientForm.get('ContactNumber')?.invalid" class="text-danger">
+                <small *ngIf="patientForm.get('ContactNumber')?.errors?.['required']">Required.</small>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label">Full Address</label>
+              <input type="text" class="form-control" formControlName="Address" placeholder="Street, City, Province">
+            </div>
+
+          </div>
+
+          <div class="modal-footer mt-3">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success" [disabled]="patientForm.invalid">
+              {{ isEditMode ? 'Save Changes' : 'Register Patient' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="alert" 
+     [ngClass]="['alert-' + alertType, showAlert ? 'show-alert' : '']" 
+     role="alert">
+  <div class="d-flex align-items-center">
+    <span class="me-2">
+      <i class="bi" [ngClass]="alertType === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
+    </span>
+    {{ alertMessage }}
+  </div>
+</div>
+
+<div class="mt-4">
+  <ag-grid-angular
+    style="width: 100%; height: 500px;"
+    [rowData]="rowData"
+    [columnDefs]="columnDefs"
+    [pagination]="true"
+    [paginationPageSize]="pageSize"
+    [paginationPageSizeSelector]="[5, 7, 10, 20]"
+    class="ag-theme-quartz">
+  </ag-grid-angular>
+</div>

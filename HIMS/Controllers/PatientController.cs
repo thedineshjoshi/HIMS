@@ -1,4 +1,5 @@
-﻿using HIMS.DTO.Patient;
+﻿using HIMS.DTO.Pagination;
+using HIMS.DTO.Patient;
 using HIMS.Interfaces;
 using HIMS.Model.Core_People_Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,9 @@ namespace HIMS.Controllers
         }
         // GET: api/<PatientController>
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<PagedResponseDto<GetPatientDto>>> GetAll([FromQuery]PagingRequestDto request)
         {
-                var patients = await _patientService.GetAllPatientsAsync();
+                var patients = await _patientService.GetAllPatientsAsync(request);
                 return Ok(patients);
         }
 
