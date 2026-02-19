@@ -5,53 +5,6 @@
   Add Employee
 </button>
 
-<div class="table-wrapper table-responsive">
-<div class="table-scroll ">
-  <table class="table table-responsive staff-table align-middle">
-    <thead>
-      <tr>
-        <th>Salutation</th>
-        <th>First Name</th>
-        <th>Middle Name</th>
-        <th>Last Name</th>
-        <th>Date of Birth</th>
-        <th>Gender</th>
-        <th>Address</th>
-        <th>Contact</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Hiring Date</th>
-        <th>Salary</th>
-        <th>Created On</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-    <tbody id="table-body">
-      <tr *ngFor="let staff of staffList">
-        <td>{{ staff.salutation }}</td>
-        <td>{{ staff.firstName }}</td>
-        <td>{{ staff.middleName }}</td>
-        <td>{{ staff.lastName }}</td>
-        <td>{{ staff.dateOfBirth }}</td>
-        <td>{{ staff.gender }}</td>
-        <td>{{ staff.address }}</td>
-        <td>{{ staff.contactNumber }}</td>
-        <td>{{ staff.email }}</td>
-        <td>{{ staff.role }}</td>
-        <td>{{ staff.hiringDate  }}</td>
-        <td>{{ staff.salary | currency:'NPR':'symbol'   }}</td>
-        <td>{{ staff.createdOn | date:'yyyy-MM-dd'}}</td>
-        <td>
-          <button class="btn btn-sm btn-primary me-1"(click)="getStaffById(staff.id)">Edit</button>
-          <button class="btn btn-sm btn-danger" (click)="deleteStaff(staff.id)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-</div>
-
-
 <div class="modal fade"  id="AddemployeeModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
@@ -221,10 +174,9 @@
   </div>
 </div>
 
-<nav *ngIf="totalPages > 1">
+<!-- <nav *ngIf="totalPages > 1">
   <ul class="pagination justify-content-center">
 
-    <!-- Previous -->
     <li class="page-item" [class.disabled]="pageNumber === 1">
       <button class="page-link"
               (click)="pageNumber > 1 && getAllStaff(pageNumber - 1)">
@@ -232,7 +184,6 @@
       </button>
     </li>
 
-    <!-- Page Numbers -->
     <li class="page-item"
         *ngFor="let page of [].constructor(totalPages); let i = index"
         [class.active]="pageNumber === i + 1">
@@ -243,7 +194,6 @@
       </button>
     </li>
 
-    <!-- Next -->
     <li class="page-item" [class.disabled]="pageNumber === totalPages">
       <button class="page-link"
               (click)="pageNumber < totalPages && getAllStaff(pageNumber + 1)">
@@ -252,6 +202,18 @@
     </li>
 
   </ul>
-</nav>
+</nav> -->
+
+<div class="mt-4">
+  <ag-grid-angular
+    style="width: 100%; height: 500px;"
+    [rowData]="rowData"
+    [columnDefs]="columnDefs"
+    [pagination]="true"
+    [paginationPageSize]="pageSize"
+    [paginationPageSizeSelector]="[5, 7, 10, 20]"
+    class="ag-theme-quartz">
+  </ag-grid-angular>
+</div>
 
 <router-outlet></router-outlet>

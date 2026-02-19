@@ -54,6 +54,10 @@ export class ApiCallService {
     return this.http.delete(`${this.patientUrl}/${id}`,{responseType:'json'})
   }
 
+  searchPatient(firstName: string, lastName: string, contact: string): Observable<any> {
+  return this.http.get(`${this.patientUrl}/SearchPatient?firstName=${firstName}&lastName=${lastName}&contact=${contact}`);
+}
+
   //end of patient service
 
   //start of appointment service

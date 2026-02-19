@@ -24,7 +24,16 @@ namespace HIMS.Controllers
                 var patients = await _patientService.GetAllPatientsAsync(request);
                 return Ok(patients);
         }
+        [Route("SearchPatient")]
+        [HttpGet]
+        public async Task<IActionResult> SearchPatientAsync([FromQuery] SearchPatientDto request)
+        {
+                var patient = await _patientService.SearchPatientAsync(request);
+                if (patient == null)
+                    return NotFound("No patient found matching the search criteria.");
+                return Ok(patient);
 
+        }
         // GET api/<PatientController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)

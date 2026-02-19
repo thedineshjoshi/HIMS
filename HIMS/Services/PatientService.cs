@@ -75,6 +75,27 @@ namespace HIMS.Services
                 ).FirstOrDefaultAsync();
         }
 
+        public async Task<GetPatientDto?> SearchPatientAsync(SearchPatientDto request)
+        {
+            return await db.Patients.Where(a => a.IsActive == true && (a.FirstName == request.FirstName && a.LastName == request.LastName && a.ContactNumber == request.ContactNumber))
+                .Select(a => new GetPatientDto
+                {
+                    Id = a.Id,
+                    FirstName = a.FirstName,
+                    MiddleName = a.MiddleName,
+                    LastName = a.LastName,
+                    Gender = a.Gender,
+                    Address = a.Address,
+                    ContactNumber = a.ContactNumber,
+                    Email = a.Email,
+                    BloodGroup = a.BloodGroup,
+                    DateOfBirth = a.DateOfBirth,
+                    CreatedOn = a.CreatedOn,
+                    CreatedBy = a.CreatedBy,
+                    UpdatedBy = a.UpdatedBy,
+                    UpdatedOn = a.UpdatedOn
+                }).FirstOrDefaultAsync();
+        }
         public async Task<Guid> AddPatientAsync(CreatePatientDto patient)
         {
             var newPatient = new Patient

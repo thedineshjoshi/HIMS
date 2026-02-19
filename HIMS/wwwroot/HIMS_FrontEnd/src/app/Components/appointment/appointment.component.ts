@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { ApiCallService } from '../../Service/api-call.service';
@@ -13,7 +13,9 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   templateUrl: './appointment.component.html',
   styleUrl: './appointment.component.css'
 })
-export class AppointmentComponent {
+export class AppointmentComponent implements OnInit {
+  isNewPatient:boolean=false;
+  existingPatientFound: any = null;
   appointmentForm!: FormGroup;
   rowData: any[] = [];
   patients: any[] = [];
@@ -43,7 +45,6 @@ export class AppointmentComponent {
       },
       onCellClicked: (params: any) => {
         if (params.event.target.getAttribute('data-action') === 'cancel') {
-          this.cancelAppointment(params.data.id);
         }
       }
     }
@@ -54,52 +55,44 @@ export class AppointmentComponent {
   }
 
   ngOnInit() {
-    this.loadInitialData();
   }
 
   initForm() {
-    this.appointmentForm = this.fb.group({
-      PatientId: ['', Validators.required],
-      DoctorId: ['', Validators.required],
-      AppointmentDateTime: ['', [Validators.required, this.validateFutureDate]],
-      Notes: ['']
-    });
-  }
+    this.appointmentForm = this.fb.group(
+      {
+      FirstName: ['', Validators.required],
+      LastName: ['', Validators.required],
+      ContactNumber: ['', Validators.required],
 
+      MiddleName: [''],
+      Email: ['', [Validators.email]],
+      DateOfBirth: [''],
+      BloodGroup: [''],
+      Gender: [''],
+      Address: [''],
+
+      DoctorId: ['', Validators.required],
+      AppointmentDate: ['', Validators.required],
+      ReasonForVisit: ['', Validators.required],
+      CreatedBy: ['00000000-0000-0000-0000-000000000000']
+    }
+  );
+}
+
+  
+
+  
   validateFutureDate = (control: any) => {
     if (!control.value) return null;
     return new Date(control.value) < new Date() ? { pastDate: true } : null;
   }
 
-  loadInitialData() {
-    this.apiService.getAllPatients(1, 100).subscribe(res => this.patients = res.items);
-    this.apiService.getAllStaffs(1, 100).subscribe(res => this.doctors = res.items.filter((s:any) => s.role === 1)); // Filter for Doctors
-    this.getAppointments();
-  }
-
-  getAppointments() {
-    this.apiService.getAppointments().subscribe(res => this.rowData = res);
-  }
 
   openModal() {
     this.appointmentForm.reset();
-    const modal = new bootstrap.Modal(document.getElementById('AppointmentModal'));
+    const modal = new bootstrap.Modal(document.getElementById('appointmentModal'));
     modal.show();
   }
 
-  submitAppointment() {
-    if (this.appointmentForm.valid) {
-      this.apiService.addAppointment(this.appointmentForm.value).subscribe(() => {
-        this.getAppointments();
-        bootstrap.Modal.getInstance(document.getElementById('AppointmentModal')).hide();
-      });
-    }
-  }
-
-  cancelAppointment(id: string) {
-    if (confirm('Are you sure you want to cancel this appointment?')) {
-      this.apiService.updateAppointmentStatus(id, 'Cancelled').subscribe(() => this.getAppointments());
-    }
-  }
 
 }

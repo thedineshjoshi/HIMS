@@ -41,7 +41,6 @@ export class PatientComponent {
     { 
       headerName: 'Actions', 
       cellRenderer: (params: any) => {
-        // This creates a button inside the grid cell
 return `
       <button class="btn btn-sm btn-outline-primary me-2" data-action="edit">
         <i class="bi bi-pencil"></i> Edit
@@ -66,10 +65,10 @@ return `
   ];
 
   constructor(private fb: FormBuilder, private apiCallService:ApiCallService) {
-  this.initForm();
-}
-ngOnInit(){
-  this.getAllPatient();
+  }
+  ngOnInit(){
+    this.getAllPatient();
+    this.initForm();
 }
 
   initForm() {

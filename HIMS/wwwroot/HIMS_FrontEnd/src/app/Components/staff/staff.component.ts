@@ -4,13 +4,15 @@ import { ApiCallService } from '../../Service/api-call.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Staff } from '../../Model/Staff';
-
+import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { AgGridAngular } from 'ag-grid-angular';
+import { StaffRole, StaffRoleConfig } from '../../Enums/role.enum';
 
 declare var bootstrap: any;
-
+ModuleRegistry.registerModules([AllCommunityModule]);
 @Component({
   selector: 'app-staff',
-  imports: [RouterOutlet,ReactiveFormsModule,CommonModule],
+  imports: [RouterOutlet, ReactiveFormsModule, CommonModule, AgGridAngular],
   templateUrl: './staff.component.html',
   styleUrl: './staff.component.css'
 })
@@ -29,6 +31,67 @@ export class StaffComponent implements OnInit {
   alertMessage: string = '';
   alertType: string = ''; 
   showAlert: boolean = false;
+  public rowData: any[] = [];
+
+  columnDefs:ColDef[]=[
+    {field: 'id', headerName: 'Staff ID', flex: 1, filter: true },
+    {field:'firstName',headerName:'First Name', flex:1, filter:true},
+    {field:'middleName', headerName:'Middle Name', flex:1, filter:true},
+    {field:'lastName', headerName:'Last Name', flex:1, filter:true},
+    {field:'dateOfBirth', headerName:'Date Of Birth', flex:1, filter:true},
+    {field:'contactNumber', headerName:'Contact Number', flex:1, filter:true},
+{
+    field: 'role',
+    headerName: 'Role',
+    flex: 1,
+    filter: true,
+    cellRenderer: (params: any) => {
+      const roleEnum = params.value as StaffRole;
+      const config = StaffRoleConfig[roleEnum];
+      if (!config) return `<span>Unknown</span>`;
+      return `
+        <span class="badge" style="
+          background-color: ${config.color}22; 
+          color: ${config.color}; 
+          border: 1px solid ${config.color};
+          padding: 4px 8px;
+          border-radius: 12px;
+          font-size: 12px;
+          font-weight: 500;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        ">
+          ${config.label}
+        </span>
+      `;
+    }
+  },    {
+      headerName: 'Actions',
+      cellRenderer: (params: any) =>
+      {
+        return `
+            <button class="btn btn-sm btn-outline-primary me-2" data-action="edit">
+        <i class="bi bi-pencil"></i> Edit
+      </button>
+      <button class="btn btn-sm btn-outline-danger" data-action="delete">
+        <i class="bi bi-trash"></i> Delete
+      </button>
+        `;
+      },
+      onCellClicked: (params: any) => {
+    const action = params.event.target.getAttribute('data-action') || 
+                   params.event.target.parentElement.getAttribute('data-action');
+    
+    if (action === 'edit') {
+      this.getStaffById(params.data.id);
+    } else if (action === 'delete') {
+      this.deleteStaff(params.data.id);
+    }
+  }
+    }
+  ]
+  
   ngOnInit(){
     this.getAllStaff(1);
     this.addStaffForm=this.fb.group({
@@ -60,6 +123,7 @@ export class StaffComponent implements OnInit {
     this.apiCallService.getAllStaffs(page, this.pageSize).subscribe(
       res=>{
         this.staffList=res.items;
+        this.rowData = res.items;
         this.pageNumber = res.pageNumber;
       this.totalRecords = res.totalRecords;
       this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
@@ -186,13 +250,10 @@ closeModal() {
     }
   }
 
-  // Manually remove the "stuck" backdrop
   const backdrops = document.getElementsByClassName('modal-backdrop');
   while (backdrops.length > 0) {
     backdrops[0].remove();
   }
-
-  // Reset the body style so you can scroll again
   document.body.classList.remove('modal-open');
   document.body.style.overflow = '';
   document.body.style.paddingRight = '';
@@ -205,11 +266,7 @@ closeModal() {
 showAlertMessage(message: string, type: 'success' | 'danger') {
   this.alertMessage = message;
   this.alertType = type;
-  
-  // Step 1: Trigger Right -> Left animation
   this.showAlert = true; 
-
-  // Step 2: After 3 seconds, trigger Left -> Right exit animation
   setTimeout(() => {
     this.showAlert = false;
   }, 3000);
