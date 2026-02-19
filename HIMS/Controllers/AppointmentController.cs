@@ -35,8 +35,8 @@ namespace HIMS.Controllers
             return Ok(appointment);
         }
 
-        [HttpPost("check-patient")]
-        public async Task<IActionResult> CheckPatient([FromBody] PatientCheckDto dto)
+        [HttpGet("check-patient")]
+        public async Task<IActionResult> CheckPatient([FromQuery] PatientCheckDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

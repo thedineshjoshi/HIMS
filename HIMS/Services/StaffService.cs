@@ -103,6 +103,7 @@ namespace HIMS.Services
                 Role = staff.Role,
                 HiringDate = staff.HiringDate,
                 Salary = staff.Salary,
+                
                 IsActive = true,
                 CreatedOn = DateTime.UtcNow,
                 CreatedBy = staff.CreatedBy
@@ -127,6 +128,10 @@ namespace HIMS.Services
                     HiringDate = staff.HiringDate,
                     Salary = staff.Salary,
                     IsActive = true,
+                    Specialization = staff.Specialization,
+                    Department = staff.Department,
+                    Qualification = staff.Qualification,
+                    LicenseNumber = staff.LicenseNumber,
                     CreatedOn = DateTime.UtcNow,
                     CreatedBy = staff.CreatedBy
                 };

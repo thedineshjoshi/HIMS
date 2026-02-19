@@ -106,11 +106,19 @@ export class StaffComponent implements OnInit {
         ContactNumber: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]], // 10-digit number
         Role: ['', Validators.required],
         HiringDate: ['', Validators.required],
-        Salary: ['', [Validators.required, Validators.min(0)]]
+        Salary: ['', [Validators.required, Validators.min(0)]],
+        Specialization: [''],
+        Department: [''],
+        Qualification: [''],
+        LicenseNumber: ['']
     })
   }
   constructor(private apiCallService:ApiCallService,private fb:FormBuilder){
  }
+
+ get isDoctor(): boolean {
+  return this.addStaffForm.get('Role')?.value === 1;
+}
 
  validateDOB(control: any) {
   if (!control.value) return null;

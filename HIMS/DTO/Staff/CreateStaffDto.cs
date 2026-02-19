@@ -14,6 +14,11 @@ namespace HIMS.DTO.Staff
         public DateOnly DateOfBirth { get; set; }
         public string Salutation { get; set; }
         public Role_Enum Role { get; set; }
+
+        public string? Specialization { get; set; }
+        public string? Department { get; set; }
+        public string? Qualification { get; set; }
+        public string? LicenseNumber { get; set; }
         public DateOnly HiringDate { get; set; }
         public double Salary { get; set; }
         public Guid CreatedBy { get; set; }

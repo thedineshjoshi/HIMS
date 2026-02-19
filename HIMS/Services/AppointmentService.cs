@@ -60,7 +60,6 @@ namespace HIMS.Services
             var patient = await db.Patients
                 .FirstOrDefaultAsync(p =>
                     p.FirstName == dto.FirstName &&
-                    p.MiddleName == dto.MiddleName &&
                     p.LastName == dto.LastName &&
                     p.ContactNumber == dto.ContactNumber);
 
@@ -74,7 +73,6 @@ namespace HIMS.Services
 
             var patient = await db.Patients.FirstOrDefaultAsync(p =>
                                                                     p.FirstName == dto.FirstName &&
-                                                                    p.MiddleName == dto.MiddleName &&
                                                                     p.LastName == dto.LastName &&
                                                                     p.ContactNumber == dto.ContactNumber
                                                                 );

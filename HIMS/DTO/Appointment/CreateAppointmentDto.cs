@@ -6,6 +6,7 @@ namespace HIMS.DTO.Appointment
     {
         public Guid DoctorId { get; set; }
         public DateTime AppointmentDate { get; set; }
+        public string MiddleName { get; set; }
         public string BloodGroup { get; set; }
         public string Gender { get; set; }
         public string Address { get; set; }

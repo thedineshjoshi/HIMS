@@ -24,7 +24,7 @@
       </div>
 
 <div class="modal-body">
-<form [formGroup]="appointmentForm">
+<form [formGroup]="appointmentForm" (ngSubmit)="bookAppointment()">
     
     <div class="row g-3 mb-3">
       <div class="col-md-4">
@@ -64,6 +64,16 @@
               <option value="Female">Female</option>
             </select>
           </div>
+          <div class="col-md-4">
+              <label class="form-label">Blood Group</label>
+              <select class="form-select" formControlName="BloodGroup">
+                <option value="" selected disabled>Select</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option>O+</option><option>O-</option>
+                <option>AB+</option><option>AB-</option>
+              </select>
+            </div>
           <div class="col-md-6">
             <label class="form-label">Address</label>
             <input type="text" class="form-control" formControlName="Address">
@@ -76,8 +86,12 @@
       <div class="col-md-6">
         <label class="form-label">Doctor</label>
         <select class="form-select" formControlName="DoctorId">
-          <option *ngFor="let doc of doctors" [value]="doc.id">Dr. {{doc.firstName}}</option>
+          <option *ngFor="let doc of doctors" [value]="doc.id">Dr. {{doc.firstName}} {{doc.lastName}} - {{doc.specialization}}</option>
         </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Reason For Visit</label>
+        <input type="textbox" formControlName="ReasonForVisit">
       </div>
       <div class="col-md-6">
         <label class="form-label">Appointment Time</label>
@@ -85,6 +99,12 @@
       </div>
     </div>
 
+    <div class="modal-footer mt-3">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success" [disabled]="appointmentForm.invalid">
+              {{ isEditMode ? 'Save Changes' : 'Book Appointment' }}
+            </button>
+            </div>
 </form>
   </div>
   </div>

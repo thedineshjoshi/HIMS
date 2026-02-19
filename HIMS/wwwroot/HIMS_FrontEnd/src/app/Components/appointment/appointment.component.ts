@@ -4,6 +4,8 @@ import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { ApiCallService } from '../../Service/api-call.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
+
 
 declare var bootstrap: any;
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -14,13 +16,16 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   styleUrl: './appointment.component.css'
 })
 export class AppointmentComponent implements OnInit {
-  isNewPatient:boolean=false;
   existingPatientFound: any = null;
   appointmentForm!: FormGroup;
   rowData: any[] = [];
   patients: any[] = [];
+  patient:any;
   doctors: any[] = [];
   isEditMode = false;
+  isNewPatient:boolean=false;
+  isPatientFound:boolean=false;
+  selectedDoctorId:string='';
 
   columnDefs: ColDef[] = [
     { field: 'id', headerName: 'Appt ID', width: 100 },
@@ -55,9 +60,40 @@ export class AppointmentComponent implements OnInit {
   }
 
   ngOnInit() {
-  }
+    this.initForm();
+    this.getDoctors();
+
+    this.appointmentForm.get('DoctorId')?.valueChanges.subscribe(id => {
+    this.selectedDoctorId=id;
+    
+  });
+    this.appointmentForm.valueChanges.pipe(debounceTime(500)).subscribe(value=>{
+      const firstName=value.FirstName;
+      const lastName=value.LastName;
+      const contactNumber = value.ContactNumber;
+      if (firstName && lastName && contactNumber) {
+        this.apiService.searchPatient(firstName,lastName,contactNumber).subscribe(
+          res=>{
+            this.patient=res;
+            if(this.patient!=null)
+            {
+              this.isNewPatient=false;
+            }
+            else{
+              this.isNewPatient=true;
+            }
+          },
+          err=>{
+            console.log(err);
+        }
+        )
+      }
+    }
+  )
+}
 
   initForm() {
+    
     this.appointmentForm = this.fb.group(
       {
       FirstName: ['', Validators.required],
@@ -71,17 +107,40 @@ export class AppointmentComponent implements OnInit {
       Gender: [''],
       Address: [''],
 
-      DoctorId: ['', Validators.required],
+      DoctorId: [this.selectedDoctorId, Validators.required],
       AppointmentDate: ['', Validators.required],
       ReasonForVisit: ['', Validators.required],
-      CreatedBy: ['00000000-0000-0000-0000-000000000000']
+      CreatedBy: ['']
     }
   );
 }
 
   
-
+  getDoctors(){
+    this.apiService.getDoctors().subscribe(
+      res=>{
+           this.doctors=res;
+      },
+      err=>{
+        console.log(err);
+      }
+    )
+  }
   
+  bookAppointment(){
+    this.appointmentForm.patchValue({
+  CreatedBy: '11111111-1111-1111-1111-111111111111'
+});
+    const appointmentData=this.appointmentForm.value;
+    this.apiService.addAppointment(appointmentData).subscribe(
+      res=>{
+        console.log(res);
+      },
+      err=>{
+        console.log(err);
+      }
+    )
+  }
   validateFutureDate = (control: any) => {
     if (!control.value) return null;
     return new Date(control.value) < new Date() ? { pastDate: true } : null;
@@ -89,6 +148,8 @@ export class AppointmentComponent implements OnInit {
 
 
   openModal() {
+    this.isNewPatient=false;
+    this.isPatientFound=false;
     this.appointmentForm.reset();
     const modal = new bootstrap.Modal(document.getElementById('appointmentModal'));
     modal.show();

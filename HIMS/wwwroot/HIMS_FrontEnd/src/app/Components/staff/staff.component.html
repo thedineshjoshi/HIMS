@@ -128,6 +128,32 @@
               </div>
             </div>
 
+            <!-- Doctor Specific Fields -->
+              <div *ngIf="isDoctor" class="row g-3 mt-2">
+
+                <div class="col-md-6">
+                  <label class="form-label">Specialization</label>
+                  <input type="text" class="form-control" formControlName="Specialization">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Department</label>
+                  <input type="text" class="form-control" formControlName="Department">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Qualification</label>
+                  <input type="text" class="form-control" formControlName="Qualification">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">License Number</label>
+                  <input type="text" class="form-control" formControlName="LicenseNumber">
+                </div>
+
+              </div>
+
+
             <div class="col-md-6">
               <label class="form-label">Hiring Date</label>
               <input type="date" class="form-control" formControlName="HiringDate">

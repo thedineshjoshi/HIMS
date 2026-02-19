@@ -10,6 +10,7 @@ namespace HIMS.Extensions
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IStaffService, StaffService>();
+            services.AddScoped<IDoctorService, DoctorService>();
             return services;
         }
     }

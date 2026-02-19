@@ -12,7 +12,8 @@ export class ApiCallService {
   constructor(private http:HttpClient) {}
   private staffUrl = 'https://localhost:7082/api/Staff';
   private patientUrl = 'https://localhost:7082/api/Patient';
-  private appointmentUrl = 'https://localhost:7082/api/Appointment'
+  private appointmentUrl = 'https://localhost:7082/api/Appointment';
+  private doctorUrl = 'https://localhost:7082/api/Doctor';
 
   // Start Of Staff Service
   addStaff(staff:Staff):Observable<any>{
@@ -54,16 +55,16 @@ export class ApiCallService {
     return this.http.delete(`${this.patientUrl}/${id}`,{responseType:'json'})
   }
 
-  searchPatient(firstName: string, lastName: string, contact: string): Observable<any> {
-  return this.http.get(`${this.patientUrl}/SearchPatient?firstName=${firstName}&lastName=${lastName}&contact=${contact}`);
+  searchPatient(firstName: string, lastName: string, contactNumber: string): Observable<any> {
+  return this.http.get(`${this.appointmentUrl}/check-patient?firstName=${firstName}&lastName=${lastName}&contactNumber=${contactNumber}`);
 }
 
   //end of patient service
 
   //start of appointment service
 
-  addAppointment(appointmentData: any): Observable<string> {
-    return this.http.post<string>(`${this.appointmentUrl}`, appointmentData);
+  addAppointment(appointmentData: any): Observable<any> {
+    return this.http.post(`${this.appointmentUrl}`, appointmentData,{responseType:'json'});
   }
 
   getAppointments(): Observable<any[]> {
@@ -72,6 +73,13 @@ export class ApiCallService {
 
   updateAppointmentStatus(id: string, status: string): Observable<any> {
     return this.http.patch(`${this.appointmentUrl}/${id}`, { status });
+  }
+
+  //end of appointment service
+
+  //start of doctor service
+  getDoctors():Observable<any>{
+    return this.http.get(`${this.doctorUrl}`,{responseType:'json'})
   }
 
 
