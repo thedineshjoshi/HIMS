@@ -4,6 +4,6 @@
     {
         Scheduled,
         Completed,
-        Canceled
+        Cancelled
     }
 }

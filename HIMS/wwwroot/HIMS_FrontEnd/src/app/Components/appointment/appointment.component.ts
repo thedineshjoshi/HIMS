@@ -26,6 +26,10 @@ export class AppointmentComponent implements OnInit {
   isNewPatient:boolean=false;
   isPatientFound:boolean=false;
   selectedDoctorId:string='';
+  editingStatusId: string | null = null;
+  getRowId = (params: any) => params.data.id || params.data.appointmentId;
+
+  
 
   columnDefs: ColDef[] = [
     { field: 'id', headerName: 'Appt ID', width: 100 },
@@ -37,21 +41,40 @@ export class AppointmentComponent implements OnInit {
     { field: 'reasonForVisit', headerName: 'Reason For Visit', flex: 1 },
     { field: 'status', headerName: 'Status', width: 120,
       cellRenderer: (params: any) => {
-        const color = params.value === 'Cancelled' ? 'danger' : params.value === 'Completed' ? 'success' : 'primary';
-        return `<span class="badge bg-${color}">${params.value}</span>`;
+      if (this.editingStatusId === params.data.id) {
+        return `
+          <select class="form-select form-select-sm" data-action="select-status">
+            <option value="Scheduled" ${params.value === 'Scheduled' ? 'selected' : ''}>Scheduled</option>
+            <option value="Completed" ${params.value === 'Completed' ? 'selected' : ''}>Completed</option>
+            <option value="Cancelled" ${params.value === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+          </select>`;
       }
+      const color = params.value === 'Cancelled' ? 'danger' : params.value === 'Completed' ? 'success' : 'primary';
+      return `<span class="badge bg-${color}">${params.value}</span>`;
+    }
     },
     {
       headerName: 'Actions',
+      minWidth:250,
       cellRenderer: (params: any) => {
+        const isCancelled = params.data?.status === 'Cancelled';
         return `
-          <button class="btn btn-sm btn-outline-danger" data-action="cancel" ${params.data.status === 'Cancelled' ? 'disabled' : ''}>
-            <i class="bi bi-x-circle"></i> Cancel
-          </button>`;
+          <button class="btn btn-sm btn-primary me-2" data-action="status">
+        <i class="bi bi-pencil"></i> Change Status
+      </button>
+      <button class="btn btn-sm btn-danger" data-action="delete">
+        <i class="bi bi-trash"></i> Delete
+      </button>`;
       },
       onCellClicked: (params: any) => {
-        if (params.event.target.getAttribute('data-action') === 'cancel') {
-        }
+        if (!params.data) return;
+       const action = params.event.target.closest('button')?.getAttribute('data-action');
+
+      if (action === 'status') {
+        this.toggleStatusEdit(params.data.id, params.api);
+      } else if (action === 'delete') {
+        this.onDelete(params.data.id);
+      }
       }
     }
   ]
@@ -156,6 +179,51 @@ export class AppointmentComponent implements OnInit {
     }
   )
   }
+
+  toggleStatusEdit(id: any, gridApi: any) {
+  this.editingStatusId = id;
+  gridApi.refreshCells({ rowNodes: [gridApi.getRowNode(id)], force: true });
+  setTimeout(() => {
+    const select = document.querySelector(`select[data-action="select-status"]`) as HTMLSelectElement;
+    
+    if (select) {
+      select.addEventListener('change', (e: Event) => {
+        const target = e.target as HTMLSelectElement;
+        const newValue = target.value;        
+        this.changeAppointmentStatus(id, newValue, gridApi);
+      });
+    }
+  }, 100);
+}
+
+  changeAppointmentStatus(id: string, newStatus: string, gridApi: any) {
+  this.apiService.updateAppointmentStatus(id, newStatus).subscribe({
+    next: (res) => {
+      this.editingStatusId = null; 
+      this.getAppointments(); 
+    },
+    error: (err) => console.error('Update failed', err)
+    });
+  }
+
+  onDelete(appointmentId:any){
+    
+          const confirmed = window.confirm("Are you sure you want to delete this patient?");
+          if(confirmed)
+          {
+            this.apiService.deleteAppointment(appointmentId).subscribe(
+              res=>{
+                alert("Deleted Successfully"),
+                this.getAppointments();
+              },
+              err=>{
+                console.log(err);
+              }
+            )
+          }
+  }
+
+
   validateFutureDate = (control: any) => {
     if (!control.value) return null;
     return new Date(control.value) < new Date() ? { pastDate: true } : null;
@@ -169,6 +237,8 @@ export class AppointmentComponent implements OnInit {
     const modal = new bootstrap.Modal(document.getElementById('appointmentModal'));
     modal.show();
   }
+
+
 
 
 }

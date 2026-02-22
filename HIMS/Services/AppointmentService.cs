@@ -157,7 +157,7 @@ namespace HIMS.Services
             {
                 Success = true,
                 Message = "Appointment Deleted Successfully",
-            }; ;
+            };
         }
     }
 }

@@ -56,7 +56,7 @@ namespace HIMS.Controllers
         }
 
         // PUT api/<AppointmentController>/5
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromQuery] AppointmentStatus_Enum status)
         {
             var updated = await _appointmentService.UpdateAppointmentAsync(id, status);

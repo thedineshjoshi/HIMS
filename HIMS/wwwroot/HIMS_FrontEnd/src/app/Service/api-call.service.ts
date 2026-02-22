@@ -71,10 +71,14 @@ export class ApiCallService {
     return this.http.get<any>(`${this.appointmentUrl}`);
   }
 
-  updateAppointmentStatus(id: string, status: string): Observable<any> {
-    return this.http.patch(`${this.appointmentUrl}/${id}`, { status });
+  updateAppointmentStatus(id: string, newStatus: string): Observable<any> {
+    return this.http.patch(`${this.appointmentUrl}/${id}?status=${newStatus}`,{});
   }
 
+  deleteAppointment(id:string):Observable<any>
+  {
+    return this.http.delete(`${this.appointmentUrl}/${id}`,{responseType:'json'})
+  }
   //end of appointment service
 
   //start of doctor service
