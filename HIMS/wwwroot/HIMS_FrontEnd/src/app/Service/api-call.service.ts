@@ -67,8 +67,8 @@ export class ApiCallService {
     return this.http.post(`${this.appointmentUrl}`, appointmentData,{responseType:'json'});
   }
 
-  getAppointments(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.appointmentUrl}`);
+  getAppointments(): Observable<any> {
+    return this.http.get<any>(`${this.appointmentUrl}`);
   }
 
   updateAppointmentStatus(id: string, status: string): Observable<any> {

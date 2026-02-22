@@ -31,9 +31,10 @@ export class AppointmentComponent implements OnInit {
     { field: 'id', headerName: 'Appt ID', width: 100 },
     { field: 'patientName', headerName: 'Patient', flex: 1 },
     { field: 'doctorName', headerName: 'Doctor', flex: 1 },
-    { field: 'appointmentDateTime', headerName: 'Date & Time', flex: 1, 
+    { field: 'appointmentDate', headerName: 'Date & Time', flex: 1, 
       valueFormatter: params => new Date(params.value).toLocaleString() 
     },
+    { field: 'reasonForVisit', headerName: 'Reason For Visit', flex: 1 },
     { field: 'status', headerName: 'Status', width: 120,
       cellRenderer: (params: any) => {
         const color = params.value === 'Cancelled' ? 'danger' : params.value === 'Completed' ? 'success' : 'primary';
@@ -62,6 +63,7 @@ export class AppointmentComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.getDoctors();
+    this.getAppointments();
 
     this.appointmentForm.get('DoctorId')?.valueChanges.subscribe(id => {
     this.selectedDoctorId=id;
@@ -140,6 +142,19 @@ export class AppointmentComponent implements OnInit {
         console.log(err);
       }
     )
+  }
+
+  getAppointments(){
+    this.apiService.getAppointments().subscribe(
+      res=>{
+          this.rowData=res;
+          console.log(res);
+    },
+    err=>{
+      console.log(err);
+
+    }
+  )
   }
   validateFutureDate = (control: any) => {
     if (!control.value) return null;

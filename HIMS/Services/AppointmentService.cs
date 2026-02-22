@@ -108,7 +108,8 @@ namespace HIMS.Services
                 ReasonForVisit = dto.ReasonForVisit,
                 Status = AppointmentStatus_Enum.Scheduled,
                 CreatedOn = DateTime.Now,
-                CreatedBy = dto.CreatedBy
+                CreatedBy = dto.CreatedBy,
+                IsActive=true
             };
 
             await db.Appointments.AddAsync(appointment);

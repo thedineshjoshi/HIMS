@@ -44,8 +44,6 @@ namespace HIMS.Controllers
             return Ok(patient);
         }
 
-
-
         // POST api/<AppointmentController>
         [HttpPost]
         public async Task<IActionResult> AddAppointmentAsync([FromBody] CreateAppointmentDto requestAppointment)
