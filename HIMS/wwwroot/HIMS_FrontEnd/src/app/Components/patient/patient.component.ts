@@ -5,6 +5,7 @@ import { Patient } from '../../Model/Patient';
 import { ApiCallService } from '../../Service/api-call.service';
 import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
+import { ToastrService } from 'ngx-toastr';
 declare var bootstrap: any;
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -15,9 +16,6 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   styleUrl: './patient.component.css'
 })
 export class PatientComponent {
-  alertMessage: string = '';
-  alertType: string = ''; 
-  showAlert: boolean = false;
   patientForm!: FormGroup;
   isEditMode: boolean = false;
   selectedPatientId: string | null = null;
@@ -30,14 +28,14 @@ export class PatientComponent {
   public rowData: any[] = [];
 
   columnDefs: ColDef[] = [
-    { field: 'id', headerName: 'Patient ID', flex: 1, filter: true }, // Changed ID to id
-  { field: 'firstName', headerName: 'First Name', flex: 1, filter: true }, // Changed FirstName to firstName
-  { field: 'lastName', headerName: 'Last Name', flex: 1, filter: true },  // Changed LastName to lastName
-  { field: 'gender', headerName: 'Gender', width: 100 },
-  { field: 'bloodGroup', headerName: 'Blood Group', width: 120 },
-  { field: 'contactNumber', headerName: 'Contact Number', flex: 1 },
-  { field: 'address', headerName: 'Address', flex: 1 },
-  { field: 'dateOfBirth', headerName: 'Date of Birth', flex: 1 },
+    { field: 'id', headerName: 'Patient ID', flex: 1, filter: true },
+    { field: 'firstName', headerName: 'First Name', flex: 1, filter: true }, 
+    { field: 'lastName', headerName: 'Last Name', flex: 1, filter: true },
+    { field: 'gender', headerName: 'Gender', width: 100 },
+    { field: 'bloodGroup', headerName: 'Blood Group', width: 120 },
+    { field: 'contactNumber', headerName: 'Contact Number', flex: 1 },
+    { field: 'address', headerName: 'Address', flex: 1 },
+    { field: 'dateOfBirth', headerName: 'Date of Birth', flex: 1 },
     { 
       headerName: 'Actions', 
       cellRenderer: (params: any) => {
@@ -64,7 +62,7 @@ return `
     }
   ];
 
-  constructor(private fb: FormBuilder, private apiCallService:ApiCallService) {
+  constructor(private fb: FormBuilder, private apiCallService:ApiCallService, private toastr:ToastrService) {
   }
   ngOnInit(){
     this.getAllPatient();
@@ -74,7 +72,7 @@ return `
   initForm() {
   this.patientForm = this.fb.group({
         FirstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-        MiddleName: ['', [Validators.minLength(0), Validators.maxLength(50)]], // optional
+        MiddleName: ['', [Validators.minLength(0), Validators.maxLength(50)]],
         LastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
         DateOfBirth: ['', [Validators.required, this.validateDOB]],
         BloodGroup:['',[Validators.required,]],
@@ -102,20 +100,24 @@ submitPatient() {
   if (this.isEditMode && this.selectedPatientId) {
     this.apiCallService.updatePatient(this.selectedPatientId, patientData).subscribe(
       res => {
+        this.toastr.success("Patient Updated Successfully");
         this.getAllPatient();
         this.closeModal();
-        this.showAlertMessage('Patient updated successfully!', 'success');
       },
-      err => this.showAlertMessage('Failed to update Patient!', 'danger')
+      err=>{
+        this.toastr.error("Failed to update patient");
+      }
     );
   } else {
     this.apiCallService.addPatient(patientData).subscribe(
       res => {
+        this.toastr.success("Patient Added Successfully");
         this.getAllPatient();
         this.closeModal();
-        this.showAlertMessage('Patient added successfully!', 'success');
       },
-      err => this.showAlertMessage('Failed to add Patient!', 'danger')
+      err => {
+        this.toastr.error("Failed to add patient");
+      }
     );
   }
 }
@@ -125,9 +127,9 @@ submitPatient() {
         this.PatientList=res.items;
         this.rowData = res.items;
         this.pageNumber = res.pageNumber;
-      this.totalRecords = res.totalRecords;
-      this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
-      console.log(res);
+        this.totalRecords = res.totalRecords;
+        this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+        console.log(res);
       },
       err=>{
         console.log(err);
@@ -166,31 +168,45 @@ submitPatient() {
     {
     this.apiCallService.deletePatient(id).subscribe(
       res=>{
+        this.toastr.success("Patient deleted successfully");
         this.getAllPatient();
-         this.alertMessage = 'Patient Deleted successfully!';
-      this.alertType = 'success';
-      this.showAlert = true;
-      setTimeout(() => this.showAlert = false, 3000);
       },
       err=>{
-        this.alertMessage = 'Failed to delete Patient!';
-      this.alertType = 'danger';
-      this.showAlert = true;
-      setTimeout(() => this.showAlert = false, 3000);
+        this.toastr.error("Failed to delete patient");
       }
     )
 
   }
 
   }
+
+  openAddModal() {
+  this.isEditMode = false;
+  this.selectedPatientId = null;
+  this.patientForm.reset();
+  this.opentModal();
+}
+
   opentModal() {
  if (!this.isEditMode) {
-    this.selectedPatientId = null;
     this.patientForm.reset();
   }
+  
   const modalEl = document.getElementById('PatientModal');
-  const modal = new bootstrap.Modal(modalEl);
-  modal.show();
+  if (modalEl) {
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+    
+    modalEl.addEventListener('hidden.bs.modal', () => {
+      this.handleModalHidden();
+    }, { once: true });
+  }
+}
+
+handleModalHidden() {
+  this.patientForm.reset();
+  this.isEditMode = false;
+  this.selectedPatientId = null;
 }
 
 closeModal() {
@@ -212,17 +228,6 @@ closeModal() {
   this.patientForm.reset();
   this.isEditMode = false;
   this.selectedPatientId = null;
-}
-
-showAlertMessage(message: string, type: 'success' | 'danger') {
-  this.alertMessage = message;
-  this.alertType = type;
-  
-  this.showAlert = true; 
-
-  setTimeout(() => {
-    this.showAlert = false;
-  }, 3000);
 }
 }
 

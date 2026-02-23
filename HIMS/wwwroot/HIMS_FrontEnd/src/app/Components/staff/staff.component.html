@@ -1,23 +1,22 @@
 <button type="button"
         class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#AddemployeeModal">
+        (click)="triggerAddModal()">
   Add Employee
 </button>
 
 <div class="modal fade"  id="AddemployeeModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-scrollable">
-    <div class="modal-content">
+    <div class="modal-content" style="width:700px">
       <div class="modal-header">
         <h5 class="modal-title">{{ isEditMode ? 'Edit Employee' : 'Add Employee' }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
-      <div class="modal-body" >
+      <div class="modal-body"  >
          <form [formGroup]="addStaffForm" (ngSubmit)="submitStaff()">
           <div class="row g-3">
             <div class="col-md-2">
-              <label class="form-label">Salutation</label>
+              <label class="form-label required-label">Salutation</label>
               <select class="form-select" formControlName="Salutation">
                 <option selected disabled>Select</option>
                 <option>Mr</option>
@@ -32,7 +31,7 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label">First Name</label>
+              <label class="form-label required-label">First Name</label>
               <input type="text" class="form-control" formControlName="FirstName" required>
               <div *ngIf="addStaffForm.get('FirstName')?.touched && addStaffForm.get('FirstName')?.invalid" class="text-danger">
                 <small *ngIf="addStaffForm.get('FirstName')?.errors?.['required']">First Name is required.</small>
@@ -51,7 +50,7 @@
             </div>
 
             <div class="col-md-3">
-              <label class="form-label">Last Name</label>
+              <label class="form-label required-label">Last Name</label>
               <input type="text" class="form-control" formControlName="LastName" required>
                <div *ngIf="addStaffForm.get('LastName')?.touched && addStaffForm.get('LastName')?.invalid" class="text-danger">
                 <small *ngIf="addStaffForm.get('LastName')?.errors?.['required']">First Name is required.</small>
@@ -61,7 +60,7 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label">Date of Birth</label>
+              <label class="form-label required-label">Date of Birth</label>
               <input type="date" class="form-control" formControlName="DateOfBirth">
               <div *ngIf="addStaffForm.get('DateOfBirth')?.touched && addStaffForm.get('DateOfBirth')?.invalid" class="text-danger">
               <small *ngIf="addStaffForm.get('DateOfBirth')?.errors?.['required']">Date of Birth is required.</small>
@@ -70,7 +69,7 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label">Gender</label>
+              <label class="form-label required-label">Gender</label>
               <select class="form-select" formControlName="Gender">
                 <option selected disabled>Select</option>
                 <option>Male</option>
@@ -83,7 +82,7 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label">Address</label>
+              <label class="form-label required-label">Address</label>
               <input type="text" class="form-control" formControlName="Address">
                <div *ngIf="addStaffForm.get('Address')?.touched && addStaffForm.get('Address')?.invalid" class="text-danger">
                 <small *ngIf="addStaffForm.get('Address')?.errors?.['required']">Address is required.</small>
@@ -91,7 +90,7 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label">Email</label>
+              <label class="form-label required-label">Email</label>
               <input type="email" class="form-control" formControlName="Email">
               <div *ngIf="addStaffForm.get('Email')?.touched && addStaffForm.get('Email')?.invalid" class="text-danger">
               <small *ngIf="addStaffForm.get('Email')?.errors?.['required']">Email is required.</small>
@@ -100,7 +99,7 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label">Contact Number</label>
+              <label class="form-label required-label">Contact Number</label>
               <input type="tel" class="form-control" formControlName="ContactNumber">
               <div *ngIf="addStaffForm.get('ContactNumber')?.touched && addStaffForm.get('ContactNumber')?.invalid" class="text-danger">
               <small *ngIf="addStaffForm.get('ContactNumber')?.errors?.['required']">Contact Number is required.</small>
@@ -109,7 +108,7 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label">Role</label>
+              <label class="form-label required-label">Role</label>
               <select class="form-select" formControlName="Role">
                 <option selected disabled>Select Role</option>
                 <option [ngValue]="0">Receptionist</option>
@@ -132,22 +131,22 @@
               <div *ngIf="isDoctor" class="row g-3 mt-2">
 
                 <div class="col-md-6">
-                  <label class="form-label">Specialization</label>
+                  <label class="form-label required-label">Specialization</label>
                   <input type="text" class="form-control" formControlName="Specialization">
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label">Department</label>
+                  <label class="form-label required-label">Department</label>
                   <input type="text" class="form-control" formControlName="Department">
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label">Qualification</label>
+                  <label class="form-label required-label">Qualification</label>
                   <input type="text" class="form-control" formControlName="Qualification">
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label">License Number</label>
+                  <label class="form-label required-label">License Number</label>
                   <input type="text" class="form-control" formControlName="LicenseNumber">
                 </div>
 
@@ -155,7 +154,7 @@
 
 
             <div class="col-md-6">
-              <label class="form-label">Hiring Date</label>
+              <label class="form-label required-label">Hiring Date</label>
               <input type="date" class="form-control" formControlName="HiringDate">
                <div *ngIf="addStaffForm.get('HiringDate')?.touched && addStaffForm.get('HiringDate')?.invalid" class="text-danger">
                 <small *ngIf="addStaffForm.get('HiringDate')?.errors?.['required']">Hiring Date is required.</small>
@@ -163,7 +162,7 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label">Salary</label>
+              <label class="form-label required-label">Salary</label>
               <input type="number" class="form-control" formControlName="Salary">
               <div *ngIf="addStaffForm.get('Salary')?.touched && addStaffForm.get('Salary')?.invalid" class="text-danger">
               <small *ngIf="addStaffForm.get('Salary')?.errors?.['required']">Salary is required.</small>
@@ -172,7 +171,6 @@
             </div>
           </div>
         
-        <!-- Modal Footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Close
@@ -187,48 +185,6 @@
       </div>
   </div>
 </div>
-
-
-<div class="alert" 
-     [ngClass]="['alert-' + alertType, showAlert ? 'show-alert' : '']" 
-     role="alert">
-  <div class="d-flex align-items-center">
-    <span class="me-2">
-      <i class="bi" [ngClass]="alertType === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
-    </span>
-    {{ alertMessage }}
-  </div>
-</div>
-
-<!-- <nav *ngIf="totalPages > 1">
-  <ul class="pagination justify-content-center">
-
-    <li class="page-item" [class.disabled]="pageNumber === 1">
-      <button class="page-link"
-              (click)="pageNumber > 1 && getAllStaff(pageNumber - 1)">
-        Previous
-      </button>
-    </li>
-
-    <li class="page-item"
-        *ngFor="let page of [].constructor(totalPages); let i = index"
-        [class.active]="pageNumber === i + 1">
-
-      <button class="page-link"
-              (click)="getAllStaff(i + 1)">
-        {{ i + 1 }}
-      </button>
-    </li>
-
-    <li class="page-item" [class.disabled]="pageNumber === totalPages">
-      <button class="page-link"
-              (click)="pageNumber < totalPages && getAllStaff(pageNumber + 1)">
-        Next
-      </button>
-    </li>
-
-  </ul>
-</nav> -->
 
 <div class="mt-4">
   <ag-grid-angular

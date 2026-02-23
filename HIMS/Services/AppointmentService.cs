@@ -71,6 +71,8 @@ namespace HIMS.Services
             if (!doctorExists)
                 throw new Exception("Doctor does not exist.");
 
+
+
             var patient = await db.Patients.FirstOrDefaultAsync(p =>
                                                                     p.FirstName == dto.FirstName &&
                                                                     p.LastName == dto.LastName &&
@@ -99,7 +101,13 @@ namespace HIMS.Services
                 await db.Patients.AddAsync(patient);
             }
 
-            var appointment = new Appointment
+            var isBusy = await db.Appointments.AnyAsync(a =>a.DoctorId == dto.DoctorId &&a.AppointmentDate == dto.AppointmentDate && a.IsActive == true && a.Status != AppointmentStatus_Enum.Cancelled);
+            if (isBusy)
+                {
+                    throw new Exception("The selected doctor is already booked for this time slot.");
+                }
+
+                var appointment = new Appointment
             {
                 Id = Guid.NewGuid(),
                 PatientId = patient.Id,

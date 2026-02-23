@@ -5,7 +5,7 @@ import { ApiCallService } from '../../Service/api-call.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
-
+import { ToastrService } from 'ngx-toastr';
 
 declare var bootstrap: any;
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -79,7 +79,7 @@ export class AppointmentComponent implements OnInit {
     }
   ]
 
-  constructor(private fb: FormBuilder, private apiService: ApiCallService){
+  constructor(private fb: FormBuilder, private apiService: ApiCallService, private toastr:ToastrService){
     this.initForm();
   }
 
@@ -99,12 +99,15 @@ export class AppointmentComponent implements OnInit {
       if (firstName && lastName && contactNumber) {
         this.apiService.searchPatient(firstName,lastName,contactNumber).subscribe(
           res=>{
+            
             this.patient=res;
             if(this.patient!=null)
             {
+              this.toastr.success("Old Patinet Found");
               this.isNewPatient=false;
             }
             else{
+              this.toastr.success("New Patient");
               this.isNewPatient=true;
             }
           },
@@ -127,7 +130,7 @@ export class AppointmentComponent implements OnInit {
 
       MiddleName: [''],
       Email: ['', [Validators.email]],
-      DateOfBirth: [''],
+      DateOfBirth: ['',[Validators.required]],
       BloodGroup: [''],
       Gender: [''],
       Address: [''],
@@ -139,7 +142,6 @@ export class AppointmentComponent implements OnInit {
     }
   );
 }
-
   
   getDoctors(){
     this.apiService.getDoctors().subscribe(
@@ -151,21 +153,43 @@ export class AppointmentComponent implements OnInit {
       }
     )
   }
+
+  validateDOB = (control: any) => {
+  if (!control.value) return null;
+  const today = new Date();
+  const dob = new Date(control.value);
+  return dob > today ? { invalidDOB: true } : null;
+}
   
-  bookAppointment(){
-    this.appointmentForm.patchValue({
-  CreatedBy: '11111111-1111-1111-1111-111111111111'
-});
-    const appointmentData=this.appointmentForm.value;
-    this.apiService.addAppointment(appointmentData).subscribe(
-      res=>{
-        console.log(res);
-      },
-      err=>{
-        console.log(err);
-      }
-    )
+  bookAppointment() {
+  const doctorId = this.appointmentForm.get('DoctorId')?.value;
+  const apptDate = this.appointmentForm.get('AppointmentDate')?.value;
+  if (this.isDoctorBusy(doctorId, apptDate)) {
+    this.toastr.error("Doctor is already booked for this slot!");
+    return;
   }
+
+  if (this.appointmentForm.invalid) {
+    this.appointmentForm.markAllAsTouched();
+    return;
+  }
+
+  this.appointmentForm.patchValue({
+    CreatedBy: '11111111-1111-1111-1111-111111111111'
+  });
+
+  const appointmentData = this.appointmentForm.value;
+  this.apiService.addAppointment(appointmentData).subscribe(
+    res => {
+      this.toastr.success("Appointment Booked Successfully");
+      this.closeModal();
+      this.getAppointments();
+    },
+    err => {
+      this.toastr.error(err.error?.message || "Error while booking appointment");
+    }
+  );
+}
 
   getAppointments(){
     this.apiService.getAppointments().subscribe(
@@ -199,36 +223,36 @@ export class AppointmentComponent implements OnInit {
   changeAppointmentStatus(id: string, newStatus: string, gridApi: any) {
   this.apiService.updateAppointmentStatus(id, newStatus).subscribe({
     next: (res) => {
+      this.toastr.success("Appointment Status Updated Successfully");
       this.editingStatusId = null; 
       this.getAppointments(); 
     },
-    error: (err) => console.error('Update failed', err)
+    error: (err) => {
+      this.toastr.error("Failed to update appointment status");
+    }
     });
   }
 
-  onDelete(appointmentId:any){
-    
-          const confirmed = window.confirm("Are you sure you want to delete this patient?");
-          if(confirmed)
-          {
-            this.apiService.deleteAppointment(appointmentId).subscribe(
-              res=>{
-                alert("Deleted Successfully"),
-                this.getAppointments();
-              },
-              err=>{
-                console.log(err);
-              }
-            )
-          }
+  onDelete(appointmentId:any){ 
+    const confirmed = window.confirm("Are you sure you want to delete this patient?");
+      if(confirmed)
+        {
+          this.apiService.deleteAppointment(appointmentId).subscribe(
+            res=>{
+              alert("Deleted Successfully"),
+              this.getAppointments();
+            },
+            err=>{
+              console.log(err);
+            }
+          )
+        }
   }
-
 
   validateFutureDate = (control: any) => {
     if (!control.value) return null;
     return new Date(control.value) < new Date() ? { pastDate: true } : null;
   }
-
 
   openModal() {
     this.isNewPatient=false;
@@ -238,7 +262,35 @@ export class AppointmentComponent implements OnInit {
     modal.show();
   }
 
+  closeModal() {
+ const modalEl = document.getElementById('appointmentModal');
+  if (modalEl) {
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) {
+      modal.hide();
+    }
+  }
+  const backdrops = document.getElementsByClassName('modal-backdrop');
+  while (backdrops.length > 0) {
+    backdrops[0].remove();
+  }
+  document.body.classList.remove('modal-open');
+  document.body.style.overflow = '';
+  document.body.style.paddingRight = '';
 
+  this.appointmentForm.reset();
+  this.isEditMode = false;
+}
 
+  isDoctorBusy(doctorId: string, appointmentTime: string): boolean {
+  if (!doctorId || !appointmentTime) return false;
+  const newDate = new Date(appointmentTime).getTime();
 
+  return this.rowData.some(appt => {
+    const existingDate = new Date(appt.appointmentDate).getTime();
+    return appt.doctorId === doctorId && 
+           existingDate === newDate && 
+           appt.status !== 'Cancelled';
+  });
+}
 }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Urhd93oAJBs=",
+  "dgSpecHash": "8GsQCyibtgI=",
   "success": true,
-  "projectFilePath": "E:\\Dinesh Prasad Joshi\\Programmings\\HIMS\\HIMS\\HIMS.csproj",
+  "projectFilePath": "E:\\Dinesh\\Programmings\\HIMS\\HIMS\\HIMS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dinesh\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Dinesh\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

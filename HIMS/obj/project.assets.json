@@ -4475,11 +4475,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Dinesh Prasad Joshi\\Programmings\\HIMS\\HIMS\\HIMS.csproj",
+      "projectUniqueName": "E:\\Dinesh\\Programmings\\HIMS\\HIMS\\HIMS.csproj",
       "projectName": "HIMS",
-      "projectPath": "E:\\Dinesh Prasad Joshi\\Programmings\\HIMS\\HIMS\\HIMS.csproj",
+      "projectPath": "E:\\Dinesh\\Programmings\\HIMS\\HIMS\\HIMS.csproj",
       "packagesPath": "C:\\Users\\Dinesh\\.nuget\\packages\\",
-      "outputPath": "E:\\Dinesh Prasad Joshi\\Programmings\\HIMS\\HIMS\\obj\\",
+      "outputPath": "E:\\Dinesh\\Programmings\\HIMS\\HIMS\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

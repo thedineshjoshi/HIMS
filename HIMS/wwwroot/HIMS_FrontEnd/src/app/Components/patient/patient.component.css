@@ -1,27 +1,5 @@
-.alert {
-  position: fixed;
-  bottom: 20px;
-  right: 20px; /* Final resting position from the right edge */
-  transform: translateX(calc(100% + 40px)); /* Start completely off-screen to the right */
-  min-width: 250px;
-  max-width: 350px;
-  z-index: 2000;
-  border-radius: 12px;
-  padding: 16px 20px;
-  color: #fff;
-  box-shadow: -5px 5px 15px rgba(0,0,0,0.2);
-  
-  /* Smooth transition for moving Right -> Left and Left -> Right */
-  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
-  opacity: 0;
+.required-label::after {
+  content: " *";
+  color: red;
+  font-weight: bold;
 }
-
-/* When this class is added, move from Right to Left (into view) */
-.alert.show-alert {
-  transform: translateX(0); /* Move to the right: 20px position defined above */
-  opacity: 1;
-}
-
-/* Background colors */
-.alert-success { background: linear-gradient(135deg, #28a745, #218838); }
-.alert-danger { background: linear-gradient(135deg, #dc3545, #c82333); }

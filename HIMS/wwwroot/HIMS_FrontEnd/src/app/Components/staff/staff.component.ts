@@ -7,6 +7,7 @@ import { Staff } from '../../Model/Staff';
 import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
 import { StaffRole, StaffRoleConfig } from '../../Enums/role.enum';
+import { ToastrService } from 'ngx-toastr';
 
 declare var bootstrap: any;
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -28,9 +29,6 @@ export class StaffComponent implements OnInit {
   pageSize=7;
   totalPages:any;
   currentPage = 1;
-  alertMessage: string = '';
-  alertType: string = ''; 
-  showAlert: boolean = false;
   public rowData: any[] = [];
 
   columnDefs:ColDef[]=[
@@ -113,7 +111,7 @@ export class StaffComponent implements OnInit {
         LicenseNumber: ['']
     })
   }
-  constructor(private apiCallService:ApiCallService,private fb:FormBuilder){
+  constructor(private apiCallService:ApiCallService,private fb:FormBuilder,private toastr:ToastrService){
  }
 
  get isDoctor(): boolean {
@@ -199,18 +197,18 @@ submitStaff() {
       res => {
         this.getAllStaff();
         this.closeModal();
-        this.showAlertMessage('Staff updated successfully!', 'success');
+        this.toastr.success("Staff Added Succesffuly")
       },
-      err => this.showAlertMessage('Failed to update staff!', 'danger')
+      err => this.toastr.error("Failed To add staff")
     );
   } else {
     this.apiCallService.addStaff(staffData).subscribe(
       res => {
         this.getAllStaff();
         this.closeModal();
-        this.showAlertMessage('Staff added successfully!', 'success');
+        this.toastr.success("Staff Added Succesffuly")
       },
-      err => this.showAlertMessage('Failed to add staff!', 'danger')
+      err => this.toastr.error("Failed To add staff")
     );
   }
 }
@@ -223,30 +221,40 @@ submitStaff() {
     this.apiCallService.deleteStaff(id).subscribe(
       res=>{
         this.getAllStaff();
-         this.alertMessage = 'Staff Deleted successfully!';
-      this.alertType = 'success';
-      this.showAlert = true;
-      setTimeout(() => this.showAlert = false, 3000);
+        this.toastr.success("Staff Deleted Succesffuly")
       },
       err=>{
-        this.alertMessage = 'Failed to delete staff!';
-      this.alertType = 'danger';
-      this.showAlert = true;
-      setTimeout(() => this.showAlert = false, 3000);
+          this.toastr.error("Failed To Delete staff")
       }
     )
 
   }
 }
 
+triggerAddModal() {
+  this.isEditMode = false;
+  this.selectedStaffId = null;
+  this.addStaffForm.reset();
+  this.addStaffForm.get('Role')?.setValue('');
+  this.openAddModal();
+}
+
+handleModalCleanup() {
+  this.addStaffForm.reset();
+  this.isEditMode = false;
+  this.selectedStaffId = null;
+}
+
 openAddModal() {
- if (!this.isEditMode) {
-    this.selectedStaffId = null;
-    this.addStaffForm.reset();
-  }
   const modalEl = document.getElementById('AddemployeeModal');
-  const modal = new bootstrap.Modal(modalEl);
-  modal.show();
+  if (modalEl) {
+    const modal = new bootstrap.Modal(modalEl);
+    modalEl.addEventListener('hidden.bs.modal', () => {
+      this.handleModalCleanup();
+    }, { once: true });
+
+    modal.show();
+  }
 }
 
 closeModal() {
@@ -269,15 +277,6 @@ closeModal() {
   this.addStaffForm.reset();
   this.isEditMode = false;
   this.selectedStaffId = null;
-}
-
-showAlertMessage(message: string, type: 'success' | 'danger') {
-  this.alertMessage = message;
-  this.alertType = type;
-  this.showAlert = true; 
-  setTimeout(() => {
-    this.showAlert = false;
-  }, 3000);
 }
 
 }

@@ -27,7 +27,7 @@ namespace HIMS.Services
             var query = db.Staffs.Where(s => s.IsActive);
             var totalRecords = await query.CountAsync();
             var requestedStaffs = await query
-        .OrderBy(s => s.FirstName) // Optional: always order for consistent paging
+        .OrderBy(s => s.FirstName) 
         .Skip((request.PageNumber - 1) * request.PageSize)
         .Take(request.PageSize)
         .Select(s => new GetStaffDto
@@ -201,8 +201,18 @@ namespace HIMS.Services
                         Message = "Staff not found"
                     };
                 }
+                
                 existingStaff.IsActive = false;
                 existingStaff.UpdatedOn = DateTime.UtcNow;
+            if(existingStaff.Role == Role_Enum.Doctor)
+            {
+                var doctor = await db.Doctors.Where(d => d.Email == existingStaff.Email && d.IsActive == true).FirstOrDefaultAsync();
+                if(doctor != null)
+                {
+                    doctor.IsActive = false;
+                    doctor.UpdatedOn = DateTime.UtcNow;
+                }
+            }
                 await db.SaveChangesAsync();
                 return new ResponseDto
                 {
