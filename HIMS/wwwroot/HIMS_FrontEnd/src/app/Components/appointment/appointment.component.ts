@@ -3,33 +3,35 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { ApiCallService } from '../../Service/api-call.service';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { debounceTime } from 'rxjs/operators';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { debounceTime, combineLatest, startWith } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 declare var bootstrap: any;
 ModuleRegistry.registerModules([AllCommunityModule]);
+
 @Component({
   selector: 'app-appointment',
+  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, AgGridAngular],
   templateUrl: './appointment.component.html',
-  styleUrl: './appointment.component.css'
+  styleUrls: ['./appointment.component.css']  
 })
 export class AppointmentComponent implements OnInit {
-  existingPatientFound: any = null;
+
   appointmentForm!: FormGroup;
   rowData: any[] = [];
-  patients: any[] = [];
-  patient:any;
   doctors: any[] = [];
-  isEditMode = false;
-  isNewPatient:boolean=false;
-  isPatientFound:boolean=false;
-  selectedDoctorId:string='';
-  editingStatusId: string | null = null;
-  getRowId = (params: any) => params.data.id || params.data.appointmentId;
+  patient: any;
 
-  
+  isEditMode = false;
+  isNewPatient = false;
+  doctorBusy = false; 
+  selectedDoctorId: string = '';
+  editingStatusId: string | null = null;
+  submitted = false;
+  getRowId = (params: any) => params.data.id;
 
   columnDefs: ColDef[] = [
     { field: 'id', headerName: 'Appt ID', width: 100 },
@@ -79,134 +81,226 @@ export class AppointmentComponent implements OnInit {
     }
   ]
 
-  constructor(private fb: FormBuilder, private apiService: ApiCallService, private toastr:ToastrService){
-    this.initForm();
-  }
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiCallService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     this.initForm();
     this.getDoctors();
     this.getAppointments();
-
-    this.appointmentForm.get('DoctorId')?.valueChanges.subscribe(id => {
-    this.selectedDoctorId=id;
-    
-  });
-    this.appointmentForm.valueChanges.pipe(debounceTime(500)).subscribe(value=>{
-      const firstName=value.FirstName;
-      const lastName=value.LastName;
-      const contactNumber = value.ContactNumber;
-      if (firstName && lastName && contactNumber) {
-        this.apiService.searchPatient(firstName,lastName,contactNumber).subscribe(
-          res=>{
-            
-            this.patient=res;
-            if(this.patient!=null)
-            {
-              this.toastr.success("Old Patinet Found");
-              this.isNewPatient=false;
-            }
-            else{
-              this.toastr.success("New Patient");
-              this.isNewPatient=true;
-            }
-          },
-          err=>{
-            console.log(err);
-        }
-        )
-      }
-    }
-  )
-}
+    this.listenDoctorChange();
+    this.listenPatientSearch();
+    this.listenDoctorBusyCheck();
+  }
 
   initForm() {
-    
-    this.appointmentForm = this.fb.group(
-      {
-      FirstName: ['', Validators.required],
-      LastName: ['', Validators.required],
-      ContactNumber: ['', Validators.required],
+    this.appointmentForm = this.fb.group({
 
-      MiddleName: [''],
-      Email: ['', [Validators.email]],
-      DateOfBirth: ['',[Validators.required]],
+      FirstName: ['', [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.pattern("^[a-zA-Z ]+$")
+      ]],
+
+      MiddleName: ['', [
+        Validators.pattern("^[a-zA-Z ]*$")
+      ]],
+
+      LastName: ['', [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.pattern("^[a-zA-Z ]+$")
+      ]],
+
+      ContactNumber: ['', [
+        Validators.required,
+        Validators.pattern("^[0-9]{10}$")
+      ]],
+
+      Email: [''],
+      DateOfBirth: [''],
       BloodGroup: [''],
       Gender: [''],
       Address: [''],
 
-      DoctorId: [this.selectedDoctorId, Validators.required],
-      AppointmentDate: ['', Validators.required],
-      ReasonForVisit: ['', Validators.required],
+      DoctorId: ['', Validators.required],
+
+      AppointmentDate: ['', [
+        Validators.required,
+        this.pastDateValidator 
+      ]],
+
+      ReasonForVisit: ['', [
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(500)
+      ]],
+
       CreatedBy: ['']
-    }
-  );
-}
-  
-  getDoctors(){
-    this.apiService.getDoctors().subscribe(
-      res=>{
-           this.doctors=res;
-      },
-      err=>{
-        console.log(err);
+    });
+  }
+
+  get f() {
+    return this.appointmentForm.controls;
+  }
+
+
+  validateDOB = (control: AbstractControl) => {
+    if (!control.value) return null;
+
+    const dob = new Date(control.value);
+    const today = new Date();
+
+    return dob > today ? { invalidDOB: true } : null;
+  };
+
+  pastDateValidator = (control: AbstractControl) => {
+    if (!control.value) return null;
+
+    const selected = new Date(control.value);
+    const now = new Date();
+
+    return selected < now ? { pastDate: true } : null;
+  };
+
+
+  listenPatientSearch() {
+    combineLatest([
+      this.appointmentForm.get('FirstName')!.valueChanges.pipe(startWith('')),
+      this.appointmentForm.get('LastName')!.valueChanges.pipe(startWith('')),
+      this.appointmentForm.get('ContactNumber')!.valueChanges.pipe(startWith(''))
+    ])
+    .pipe(debounceTime(500))
+    .subscribe(([firstName, lastName, contactNumber]) => {
+
+      if (firstName && lastName && contactNumber) {
+        this.apiService.searchPatient(firstName, lastName, contactNumber)
+          .subscribe(res => {
+
+            this.patient = res;
+
+            if (this.patient) {
+              this.toastr.success("Existing Patient Found");
+              this.isNewPatient = false;
+              this.removeNewPatientValidators();
+            } else {
+              this.toastr.info("New Patient Registration Required");
+              this.isNewPatient = true;
+              this.applyNewPatientValidators();
+            }
+          });
       }
-    )
+    });
   }
 
-  validateDOB = (control: any) => {
-  if (!control.value) return null;
-  const today = new Date();
-  const dob = new Date(control.value);
-  return dob > today ? { invalidDOB: true } : null;
-}
-  
+  applyNewPatientValidators() {
+    this.f['Email'].setValidators([Validators.required, Validators.email]);
+    this.f['DateOfBirth'].setValidators([Validators.required, this.validateDOB]);
+    this.f['Gender'].setValidators([Validators.required]);
+
+    this.f['Email'].updateValueAndValidity();
+    this.f['DateOfBirth'].updateValueAndValidity();
+    this.f['Gender'].updateValueAndValidity();
+  }
+
+  removeNewPatientValidators() {
+    this.f['Email'].clearValidators();
+    this.f['DateOfBirth'].clearValidators();
+    this.f['Gender'].clearValidators();
+
+    this.f['Email'].updateValueAndValidity();
+    this.f['DateOfBirth'].updateValueAndValidity();
+    this.f['Gender'].updateValueAndValidity();
+  }
+
+
+  listenDoctorBusyCheck() {
+    combineLatest([
+      this.appointmentForm.get('DoctorId')!.valueChanges.pipe(startWith('')),
+      this.appointmentForm.get('AppointmentDate')!.valueChanges.pipe(startWith(''))
+    ])
+    .subscribe(([doctorId, date]) => {
+      this.doctorBusy = this.isDoctorBusy(doctorId, date);
+    });
+  }
+
+  isDoctorBusy(doctorId: string, appointmentTime: string): boolean {
+    if (!doctorId || !appointmentTime) return false;
+
+    const newDate = new Date(appointmentTime).getTime();
+
+    return this.rowData.some(appt => {
+      const existingDate = new Date(appt.appointmentDate).getTime();
+      return appt.doctorId === doctorId &&
+             existingDate === newDate &&
+             appt.status !== 'Cancelled';
+    });
+  }
+
+  listenDoctorChange() {
+    this.appointmentForm.get('DoctorId')?.valueChanges.subscribe(id => {
+      this.selectedDoctorId = id;
+    });
+  }
+
+
   bookAppointment() {
-  const doctorId = this.appointmentForm.get('DoctorId')?.value;
-  const apptDate = this.appointmentForm.get('AppointmentDate')?.value;
-  if (this.isDoctorBusy(doctorId, apptDate)) {
-    this.toastr.error("Doctor is already booked for this slot!");
-    return;
+
+    this.submitted = true;
+
+    if (this.appointmentForm.invalid || this.doctorBusy) {
+      this.appointmentForm.markAllAsTouched();
+      return;
+    }
+
+    this.appointmentForm.patchValue({
+      CreatedBy: '11111111-1111-1111-1111-111111111111'
+    });
+
+    this.apiService.addAppointment(this.appointmentForm.value)
+      .subscribe({
+        next: () => {
+          this.toastr.success("Appointment Booked Successfully");
+          this.closeModal();
+          this.getAppointments();
+        },
+        error: (err) => {
+          this.toastr.error(err.error?.message || "Error booking appointment");
+        }
+      });
   }
 
-  if (this.appointmentForm.invalid) {
-    this.appointmentForm.markAllAsTouched();
-    return;
+
+  getDoctors() {
+    this.apiService.getDoctors()
+      .subscribe(res => this.doctors = res);
   }
 
-  this.appointmentForm.patchValue({
-    CreatedBy: '11111111-1111-1111-1111-111111111111'
-  });
+  getAppointments() {
+    this.apiService.getAppointments()
+      .subscribe(res => {
+        this.rowData = res,
+        console.log(res);
+      });
+  }
 
-  const appointmentData = this.appointmentForm.value;
-  this.apiService.addAppointment(appointmentData).subscribe(
-    res => {
-      this.toastr.success("Appointment Booked Successfully");
-      this.closeModal();
-      this.getAppointments();
-    },
-    err => {
-      this.toastr.error(err.error?.message || "Error while booking appointment");
+  onDelete(id: any) {
+    if (window.confirm("Are you sure you want to delete this appointment?")) {
+      this.apiService.deleteAppointment(id)
+        .subscribe(() => {
+          this.toastr.success("Deleted Successfully");
+          this.getAppointments();
+        });
     }
-  );
-}
-
-  getAppointments(){
-    this.apiService.getAppointments().subscribe(
-      res=>{
-          this.rowData=res;
-          console.log(res);
-    },
-    err=>{
-      console.log(err);
-
-    }
-  )
   }
 
   toggleStatusEdit(id: any, gridApi: any) {
   this.editingStatusId = id;
-  gridApi.refreshCells({ rowNodes: [gridApi.getRowNode(id)], force: true });
+  const node = gridApi.getRowNode(id.toString());
+  gridApi.refreshCells({ rowNodes: [node], force: true });
   setTimeout(() => {
     const select = document.querySelector(`select[data-action="select-status"]`) as HTMLSelectElement;
     
@@ -217,80 +311,47 @@ export class AppointmentComponent implements OnInit {
         this.changeAppointmentStatus(id, newValue, gridApi);
       });
     }
+    else{
+      console.error("Could not find row node with ID:", id);
+    }
   }, 100);
 }
 
   changeAppointmentStatus(id: string, newStatus: string, gridApi: any) {
-  this.apiService.updateAppointmentStatus(id, newStatus).subscribe({
-    next: (res) => {
-      this.toastr.success("Appointment Status Updated Successfully");
-      this.editingStatusId = null; 
-      this.getAppointments(); 
-    },
-    error: (err) => {
-      this.toastr.error("Failed to update appointment status");
+    this.apiService.updateAppointmentStatus(id, newStatus).subscribe({
+      next: (res) => {
+        this.toastr.success("Appointment Status Updated Successfully");
+        this.editingStatusId = null; 
+        this.getAppointments(); 
+      },
+      error: (err) => {
+        this.toastr.error("Failed to update appointment status");
+      }
+      });
     }
-    });
-  }
-
-  onDelete(appointmentId:any){ 
-    const confirmed = window.confirm("Are you sure you want to delete this patient?");
-      if(confirmed)
-        {
-          this.apiService.deleteAppointment(appointmentId).subscribe(
-            res=>{
-              alert("Deleted Successfully"),
-              this.getAppointments();
-            },
-            err=>{
-              console.log(err);
-            }
-          )
-        }
-  }
-
-  validateFutureDate = (control: any) => {
-    if (!control.value) return null;
-    return new Date(control.value) < new Date() ? { pastDate: true } : null;
-  }
 
   openModal() {
-    this.isNewPatient=false;
-    this.isPatientFound=false;
+    this.isNewPatient = false;
+    this.submitted = false;
+    this.doctorBusy = false;
     this.appointmentForm.reset();
-    const modal = new bootstrap.Modal(document.getElementById('appointmentModal'));
+
+    const modal = new bootstrap.Modal(
+      document.getElementById('appointmentModal')
+    );
     modal.show();
   }
 
   closeModal() {
- const modalEl = document.getElementById('appointmentModal');
-  if (modalEl) {
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) {
-      modal.hide();
+    const modalEl = document.getElementById('appointmentModal');
+    if (modalEl) {
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal?.hide();
     }
+
+    this.appointmentForm.reset();
+    this.isEditMode = false;
+    this.isNewPatient = false;
+    this.doctorBusy = false;
   }
-  const backdrops = document.getElementsByClassName('modal-backdrop');
-  while (backdrops.length > 0) {
-    backdrops[0].remove();
-  }
-  document.body.classList.remove('modal-open');
-  document.body.style.overflow = '';
-  document.body.style.paddingRight = '';
-
-  this.appointmentForm.reset();
-  this.isEditMode = false;
-}
-
-  isDoctorBusy(doctorId: string, appointmentTime: string): boolean {
-  if (!doctorId || !appointmentTime) return false;
-  const newDate = new Date(appointmentTime).getTime();
-
-  return this.rowData.some(appt => {
-    const existingDate = new Date(appt.appointmentDate).getTime();
-    return appt.doctorId === doctorId && 
-           existingDate === newDate && 
-           appt.status !== 'Cancelled';
-  });
-}
 }

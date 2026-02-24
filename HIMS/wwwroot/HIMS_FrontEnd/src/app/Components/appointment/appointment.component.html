@@ -7,110 +7,232 @@
   </div>
 
   <ag-grid-angular
-    [getRowId]="getRowId"
     style="width: 100%; height: 500px;"
     class="ag-theme-quartz"
     [rowData]="rowData"
     [columnDefs]="columnDefs"
+    [getRowId]="getRowId"
     [pagination]="true">
   </ag-grid-angular>
 </div>
 
-<div class="modal fade" id="appointmentModal" tabindex="-1" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="appointmentModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
+
       <div class="modal-header">
         <h5 class="modal-title">Book Appointment</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
-<div class="modal-body">
-<form [formGroup]="appointmentForm" (ngSubmit)="bookAppointment()">
-    
-    <div class="row g-3 mb-3">
-      <div class="col-md-4">
-        <label class="form-label">First Name</label>
-        <input type="text" class="form-control" formControlName="FirstName">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Last Name</label>
-        <input type="text" class="form-control" formControlName="LastName">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Contact Number</label>
-        <input type="text" class="form-control" formControlName="ContactNumber">
-      </div>
-    </div>
+      <div class="modal-body">
 
-    <div *ngIf="isNewPatient" class="card bg-light mb-3 animate__animated animate__fadeIn">
-      <div class="card-body">
-        <h6 class="text-primary mb-3"><i class="bi bi-person-plus"></i> New Patient Registration</h6>
-        <div class="row g-3">
-          <div class="col-md-4">
-            <label class="form-label">Middle Name</label>
-            <input type="text" class="form-control" formControlName="MiddleName">
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" formControlName="Email">
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">DOB</label>
-            <input type="date" class="form-control" formControlName="DateOfBirth">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Gender</label>
-            <select class="form-select" formControlName="Gender">
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-          <div class="col-md-4">
-              <label class="form-label">Blood Group</label>
-              <select class="form-select" formControlName="BloodGroup">
-                <option value="" selected disabled>Select</option>
-                <option>A+</option><option>A-</option>
-                <option>B+</option><option>B-</option>
-                <option>O+</option><option>O-</option>
-                <option>AB+</option><option>AB-</option>
-              </select>
+        <form [formGroup]="appointmentForm" (ngSubmit)="bookAppointment()">
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label">First Name</label>
+              <input type="text"
+                     class="form-control"
+                     formControlName="FirstName"
+                     [ngClass]="{'is-invalid': (f['FirstName'].touched || submitted) && f['FirstName'].errors}">
+
+              <div class="invalid-feedback" 
+                *ngIf="(f['FirstName'].touched || submitted) && f['FirstName'].errors">
+              <div *ngIf="f['FirstName'].errors['required']">First name is required.</div>
+              <div *ngIf="f['FirstName'].errors['pattern']">Only letters allowed.</div>
+              <div *ngIf="f['FirstName'].errors['minlength']">Minimum 2 characters required.</div>
             </div>
-          <div class="col-md-6">
-            <label class="form-label">Address</label>
-            <input type="text" class="form-control" formControlName="Address">
+            <div class="col-md-4">
+              <label class="form-label">Last Name</label>
+              <input type="text"
+                     class="form-control"
+                     formControlName="LastName"
+                     [ngClass]="{'is-invalid': (f['LastName'].touched || submitted) && f['LastName'].errors}">
+
+              <div class="invalid-feedback"
+                   *ngIf="(f['LastName'].touched || submitted) && f['LastName'].errors">
+                <div *ngIf="f['LastName'].errors['required']">Last name is required.</div>
+                <div *ngIf="f['LastName'].errors['pattern']">Only letters allowed.</div>
+                <div *ngIf="f['LastName'].errors['minlength']">Minimum 2 characters required.</div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Contact Number</label>
+              <input type="text"
+                     class="form-control"
+                     formControlName="ContactNumber"
+                     [ngClass]="{'is-invalid': (f['ContactNumber'].touched || submitted) && f['ContactNumber'].errors}">
+
+              <div class="invalid-feedback"
+                   *ngIf="(f['ContactNumber'].touched || submitted) && f['ContactNumber'].errors">
+                <div *ngIf="f['ContactNumber'].errors['required']">Contact number is required.</div>
+                <div *ngIf="f['ContactNumber'].errors['pattern']">Enter valid 10 digit number.</div>
+              </div>
+            </div>
+
           </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="row g-3">
-      <div class="col-md-6">
-        <label class="form-label">Doctor</label>
-        <select class="form-select" formControlName="DoctorId">
-          <option *ngFor="let doc of doctors" [value]="doc.id">Dr. {{doc.firstName}} {{doc.lastName}} - {{doc.specialization}}</option>
-        </select>
-      </div>
-      <div class="col-md-6">
-        <label class="form-label">Reason For Visit</label>
-        <input type="textbox" formControlName="ReasonForVisit">
-      </div>
-      <div class="col-md-6">
-        <label class="form-label">Appointment Time</label>
-        <input type="datetime-local" class="form-control" formControlName="AppointmentDate">
-      </div>
-    </div>
-    <div *ngIf="isDoctorBusy(appointmentForm.get('DoctorId')?.value, appointmentForm.get('AppointmentDate')?.value)" 
-       class="text-danger mt-1">
-    <small><i class="bi bi-exclamation-triangle"></i> Doctor is already booked for this time!</small>
-  </div>
+          <div *ngIf="isNewPatient"
+               class="card bg-light mb-3 animate__animated animate__fadeIn">
 
-    <div class="modal-footer mt-3">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-success" 
-              [disabled]="appointmentForm.invalid || isDoctorBusy(appointmentForm.get('DoctorId')?.value, appointmentForm.get('AppointmentDate')?.value)">
+            <div class="card-body">
+              <h6 class="text-primary mb-3">
+                <i class="bi bi-person-plus"></i> New Patient Registration
+              </h6>
+
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label">Middle Name</label>
+                  <input type="text"
+                         class="form-control"
+                         formControlName="MiddleName">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Email</label>
+                  <input type="email"
+                         class="form-control"
+                         formControlName="Email"
+                         [ngClass]="{'is-invalid': (f['Email'].touched || submitted) && f['Email'].errors}">
+
+                  <div class="invalid-feedback"
+                       *ngIf="(f['Email'].touched || submitted) && f['Email'].errors">
+                    <div *ngIf="f['Email'].errors['required']">Email is required.</div>
+                    <div *ngIf="f['Email'].errors['email']">Enter valid email address.</div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">DOB</label>
+                  <input type="date"
+                         class="form-control"
+                         formControlName="DateOfBirth"
+                         [ngClass]="{'is-invalid': (f['DateOfBirth'].touched || submitted) && f['DateOfBirth'].errors}">
+
+                  <div class="invalid-feedback"
+                       *ngIf="(f['DateOfBirth'].touched || submitted) && f['DateOfBirth'].errors">
+                    <div *ngIf="f['DateOfBirth'].errors['required']">Date of birth is required.</div>
+                    <div *ngIf="f['DateOfBirth'].errors['invalidDOB']">DOB cannot be in future.</div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Gender</label>
+                  <select class="form-select"
+                          formControlName="Gender"
+                          [ngClass]="{'is-invalid': (f['Gender'].touched || submitted) && f['Gender'].errors}">
+                    <option value="" disabled>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+
+                  <div class="invalid-feedback"
+                       *ngIf="(f['Gender'].touched || submitted) && f['Gender'].errors">
+                    Gender is required.
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Blood Group</label>
+                  <select class="form-select"
+                          formControlName="BloodGroup">
+                    <option value="" disabled>Select</option>
+                    <option>A+</option>
+                    <option>A-</option>
+                    <option>B+</option>
+                    <option>B-</option>
+                    <option>O+</option>
+                    <option>O-</option>
+                    <option>AB+</option>
+                    <option>AB-</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Address</label>
+                  <input type="text"
+                         class="form-control"
+                         formControlName="Address">
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <label class="form-label">Doctor</label>
+              <select class="form-select"
+                      formControlName="DoctorId"
+                      [ngClass]="{'is-invalid': (f['DoctorId'].touched || submitted) && f['DoctorId'].errors}">
+                <option value="" disabled>Select Doctor</option>
+                <option *ngFor="let doc of doctors" [value]="doc.id">
+                  Dr. {{doc.firstName}} {{doc.lastName}} - {{doc.specialization}}
+                </option>
+              </select>
+
+              <div class="invalid-feedback"
+                   *ngIf="(f['DoctorId'].touched || submitted) && f['DoctorId'].errors">
+                Please select a doctor.
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Reason For Visit</label>
+              <textarea class="form-control"
+                        rows="2"
+                        formControlName="ReasonForVisit"
+                        [ngClass]="{'is-invalid': (f['ReasonForVisit'].touched || submitted) && f['ReasonForVisit'].errors}">
+              </textarea>
+
+              <div class="invalid-feedback"
+                   *ngIf="(f['ReasonForVisit'].touched || submitted) && f['ReasonForVisit'].errors">
+                <div *ngIf="f['ReasonForVisit'].errors['required']">Reason is required.</div>
+                <div *ngIf="f['ReasonForVisit'].errors['minlength']">Minimum 5 characters required.</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Appointment Time</label>
+              <input type="datetime-local"
+                     class="form-control"
+                     formControlName="AppointmentDate"
+                     [ngClass]="{'is-invalid': (f['AppointmentDate'].touched || submitted) && f['AppointmentDate'].errors}">
+
+              <div class="invalid-feedback"
+                   *ngIf="(f['AppointmentDate'].touched || submitted) && f['AppointmentDate'].errors">
+                <div *ngIf="f['AppointmentDate'].errors['required']">Appointment time is required.</div>
+                <div *ngIf="f['AppointmentDate'].errors['pastDate']">Cannot select past time.</div>
+              </div>
+            </div>
+
+          </div>
+
+          <div *ngIf="doctorBusy" class="text-danger mt-2">
+            <small>
+              <i class="bi bi-exclamation-triangle"></i>
+              Doctor is already booked for this time!
+            </small>
+          </div>
+
+          <div class="modal-footer mt-3">
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">
+              Cancel
+            </button>
+
+            <button type="submit"
+                    class="btn btn-success"
+                    [disabled]="appointmentForm.invalid || doctorBusy">
               {{ isEditMode ? 'Save Changes' : 'Book Appointment' }}
             </button>
+          </div>
+          </div>
+        </form>
+      </div>
+
     </div>
-</form>
   </div>
-  </div>
+</div>

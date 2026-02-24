@@ -1,0 +1,122 @@
+.modal-content {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.form-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #edf2f7;
+  padding: 1.25rem 1.5rem;
+}
+
+.modal-title {
+  font-weight: 700;
+  color: #2d3748;
+  letter-spacing: -0.5px;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.4rem;
+}
+
+.form-control, .form-select {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+  background-color: #fff;
+}
+
+.card.bg-light {
+  background-color: #f0f7ff !important;
+  border: 1px dashed #bee3f8;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.card-body h6 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.is-invalid {
+  border-color: #fc8181 !important;
+  background-image: none !important; 
+}
+
+.invalid-feedback {
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.text-danger small {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #fff5f5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #fed7d7;
+  font-weight: 600;
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #edf2f7;
+  padding: 1rem 1.5rem;
+}
+
+.btn {
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: transform 0.1s active;
+}
+
+.btn-success {
+  background-color: #38a169;
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: #2f855a;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.modal-body {
+  max-height: 75vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
