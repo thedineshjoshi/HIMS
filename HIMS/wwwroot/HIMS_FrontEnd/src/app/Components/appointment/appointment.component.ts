@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, combineLatest, startWith } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 declare var bootstrap: any;
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -268,6 +267,7 @@ export class AppointmentComponent implements OnInit {
           this.getAppointments();
         },
         error: (err) => {
+          console.log(err);
           this.toastr.error(err.error?.message || "Error booking appointment");
         }
       });

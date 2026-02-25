@@ -88,7 +88,7 @@ namespace HIMS.Services
                     MiddleName = dto.MiddleName,
                     LastName = dto.LastName,
                     ContactNumber = dto.ContactNumber,
-                    DateOfBirth = dto.DateOfBirth,
+                    DateOfBirth = (DateOnly)dto.DateOfBirth,
                     BloodGroup = dto.BloodGroup,
                     Email = dto.Email,
                     Address = dto.Address,
