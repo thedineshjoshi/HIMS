@@ -3,15 +3,22 @@ import { RouterOutlet } from '@angular/router';
 import { ApiCallService } from '../../Service/api-call.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Staff } from '../../Model/Staff';
 import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
 import { StaffRole, StaffRoleConfig } from '../../Enums/role.enum';
 import { ToastrService } from 'ngx-toastr';
+import { StaffDto } from '../../../Models/DTOs/Staff/staffDto';
+import { StaffViewModel } from '../../../Models/ViewModels/staffViewModel';
+import { AddStaffDto } from '../../../Models/DTOs/Staff/addStaffDto';
+import { UpdateStaffDto } from '../../../Models/DTOs/Staff/updateStaffDto';
+import { mapStaffDtoToViewModel } from '../../../Models/mapToViewModel';
+
+
 
 declare var bootstrap: any;
 ModuleRegistry.registerModules([AllCommunityModule]);
 @Component({
+  standalone:true,
   selector: 'app-staff',
   imports: [RouterOutlet, ReactiveFormsModule, CommonModule, AgGridAngular],
   templateUrl: './staff.component.html',
@@ -23,19 +30,19 @@ export class StaffComponent implements OnInit {
   selectedStaffId: string | null = null;
   addStaffForm!:FormGroup;
   editStaffForm!:FormGroup;
-  staffList: any;
+  staffList: StaffDto[]=[];
   totalRecords=0;
-  pageNumber:any;
+  pageNumber:number=0;
   pageSize=7;
-  totalPages:any;
+  totalPages:number=0;
   currentPage = 1;
-  public rowData: any[] = [];
+  public rowData: StaffViewModel[] = [];
+
+
 
   columnDefs:ColDef[]=[
     {field: 'id', headerName: 'Staff ID', flex: 1, filter: true },
-    {field:'firstName',headerName:'First Name', flex:1, filter:true},
-    {field:'middleName', headerName:'Middle Name', flex:1, filter:true},
-    {field:'lastName', headerName:'Last Name', flex:1, filter:true},
+    {field:'fullName',headerName:'Full Name', flex:1, filter:true},
     {field:'dateOfBirth', headerName:'Date Of Birth', flex:1, filter:true},
     {field:'contactNumber', headerName:'Contact Number', flex:1, filter:true},
 {
@@ -91,7 +98,7 @@ export class StaffComponent implements OnInit {
   ]
   
   ngOnInit(){
-    this.getAllStaff(1);
+    this.getAllStaffs(1);
     this.addStaffForm=this.fb.group({
         Salutation: ['', Validators.required],
         FirstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
@@ -125,12 +132,13 @@ export class StaffComponent implements OnInit {
   return dob > today ? { invalidDOB: true } : null;
 }
 
-  getAllStaff(page: number = 1){
+  getAllStaffs(page: number = 1){
     this.apiCallService.getAllStaffs(page, this.pageSize).subscribe(
       res=>{
         this.staffList=res.items;
-        this.rowData = res.items;
-        this.pageNumber = res.pageNumber;
+        this.rowData = res.items.map(item =>
+        mapStaffDtoToViewModel(item)
+      );
       this.totalRecords = res.totalRecords;
       this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
       },
@@ -143,14 +151,14 @@ export class StaffComponent implements OnInit {
   nextPage() {
   if (this.currentPage * this.pageSize < this.totalRecords) {
     this.currentPage++;
-    this.getAllStaff();
+    this.getAllStaffs();
   }
 }
 
 prevPage() {
   if (this.currentPage > 1) {
     this.currentPage--;
-    this.getAllStaff();
+    this.getAllStaffs();
   }
 }
 
@@ -191,20 +199,22 @@ submitStaff() {
     return;
   }
 
-  const staffData: Staff = this.addStaffForm.value;
+  
   if (this.isEditMode && this.selectedStaffId) {
-    this.apiCallService.updateStaff(this.selectedStaffId, staffData).subscribe(
+    const updateStaffData:UpdateStaffDto = this.addStaffForm.value;
+    this.apiCallService.updateStaff(this.selectedStaffId, updateStaffData).subscribe(
       res => {
-        this.getAllStaff();
+        this.getAllStaffs();
         this.closeModal();
         this.toastr.success("Staff Added Succesffuly")
       },
       err => this.toastr.error("Failed To add staff")
     );
   } else {
-    this.apiCallService.addStaff(staffData).subscribe(
+    const addStaffData: AddStaffDto = this.addStaffForm.value;
+    this.apiCallService.addStaff(addStaffData).subscribe(
       res => {
-        this.getAllStaff();
+        this.getAllStaffs();
         this.closeModal();
         this.toastr.success("Staff Added Succesffuly")
       },
@@ -220,7 +230,7 @@ submitStaff() {
     {
     this.apiCallService.deleteStaff(id).subscribe(
       res=>{
-        this.getAllStaff();
+        this.getAllStaffs();
         this.toastr.success("Staff Deleted Succesffuly")
       },
       err=>{

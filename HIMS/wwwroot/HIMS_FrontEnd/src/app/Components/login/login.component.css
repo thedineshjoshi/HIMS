@@ -1,0 +1,137 @@
+.login-wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+
+  /* // Sidebar Styling */
+  .sidebar {
+    flex: 0 0 38%;
+    background: linear-gradient(135deg, #4b5cd7 0%, #3a4bb0 100%);
+    color: white;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-image: url('https://www.transparenttextures.com/patterns/cubes.png'), 
+                      linear-gradient(135deg, #4b5cd7 0%, #3a4bb0 100%);
+
+    .hospital-name {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 2rem;
+    }
+
+    .solution-tag {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 15px 20px;
+      border-radius: 4px;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      
+      .highlight { color: #00ffcc; font-weight: 600; }
+    }
+
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      li {
+        margin-bottom: 12px;
+        font-size: 1.1rem;
+        &::before { content: '☑ '; margin-right: 10px; opacity: 0.8; }
+      }
+    }
+
+    .sidebar-footer {
+      font-size: 0.85rem;
+      a { color: #00ffcc; text-decoration: none; display: block; margin-bottom: 5px; }
+      p { opacity: 0.7; }
+    }
+  }
+
+  /* // Main Content Styling */
+  .login-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    position: relative;
+
+    .form-container {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .logo-icon { font-size: 48px; color: #27ae60; font-weight: bold; }
+    .logo-text { font-size: 0.75rem; color: #888; letter-spacing: 1px; margin-bottom: 2rem; }
+    .form-title { font-weight: 400; color: #555; margin-bottom: 2rem; font-size: 1.8rem; }
+
+    .input-field {
+      margin-bottom: 1rem;
+      input {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        background: #f1f3f6;
+        border-radius: 4px;
+        font-size: 1rem;
+        outline-color: #4b5cd7;
+      }
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      
+      .checkbox-container {
+        font-size: 0.9rem;
+        color: #777;
+        cursor: pointer;
+      }
+
+      .action-group {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        .forgot-password {
+          color: #4b5cd7;
+          text-decoration: none;
+          font-size: 0.9rem;
+        }
+
+        .btn-signin {
+          background: #5c6bc0;
+          color: white;
+          border: none;
+          padding: 12px 30px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 1rem;
+          transition: transform 0.1s;
+          &:active { transform: scale(0.98); }
+        }
+      }
+    }
+
+    .version-tag {
+      position: absolute;
+      bottom: 20px;
+      color: #999;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+/* // Mobile View */
+@media (max-width: 900px) {
+  .login-wrapper { flex-direction: column; height: auto; }
+  .sidebar { flex: none; padding: 40px 20px; }
+  .login-main { padding: 60px 20px; }
+}

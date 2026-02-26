@@ -6,6 +6,10 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, combineLatest, startWith } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { AppointmentDto } from '../../../Models/DTOs/Appointment/appointmentDto';
+import { AppointmentViewModel } from '../../../Models/ViewModels/appointmentViewModel';
+import { DoctorDto } from '../../../Models/DTOs/Doctor/doctorDto';
+import { mapAppointmentDtoToViewModel } from '../../../Models/mapToViewModel';
 
 declare var bootstrap: any;
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -20,10 +24,9 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 export class AppointmentComponent implements OnInit {
 
   appointmentForm!: FormGroup;
-  rowData: any[] = [];
-  doctors: any[] = [];
+  public rowData: AppointmentViewModel[] = [];
+  doctors: DoctorDto[] = [];
   patient: any;
-
   isEditMode = false;
   isNewPatient = false;
   doctorBusy = false; 
@@ -247,9 +250,7 @@ export class AppointmentComponent implements OnInit {
 
 
   bookAppointment() {
-
     this.submitted = true;
-
     if (this.appointmentForm.invalid || this.doctorBusy) {
       this.appointmentForm.markAllAsTouched();
       return;
@@ -276,15 +277,27 @@ export class AppointmentComponent implements OnInit {
 
   getDoctors() {
     this.apiService.getDoctors()
-      .subscribe(res => this.doctors = res);
+      .subscribe(res => 
+        {
+          this.doctors = res;
+          console.log(res);
+
+        }
+      );
   }
 
   getAppointments() {
-    this.apiService.getAppointments()
-      .subscribe(res => {
-        this.rowData = res,
+    this.apiService.getAppointments().subscribe(
+      res => {
+        this.rowData = res.map(item =>
+                        mapAppointmentDtoToViewModel(item));
         console.log(res);
-      });
+      },
+      err=>{
+        console.log(err);
+      }
+    
+    );
   }
 
   onDelete(id: any) {

@@ -6,6 +6,11 @@ import { ApiCallService } from '../../Service/api-call.service';
 import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ToastrService } from 'ngx-toastr';
+import { PatientDto } from '../../../Models/DTOs/Patient/patientDto';
+import { PatientViewModel } from '../../../Models/ViewModels/patientViewModel';
+import { AddPatientDto } from '../../../Models/DTOs/Patient/addPatientDto';
+import { UpdatePatientDto } from '../../../Models/DTOs/Patient/updatePatientDto';
+import { mapPatientDtoToViewModel } from '../../../Models/mapToViewModel';
 declare var bootstrap: any;
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -19,19 +24,17 @@ export class PatientComponent {
   patientForm!: FormGroup;
   isEditMode: boolean = false;
   selectedPatientId: string | null = null;
-  PatientList: any;
+  patientList: PatientDto[]=[];
   totalRecords=0;
-  pageNumber:any;
+  pageNumber:number=0;
   pageSize=7;
-  totalPages:any;
+  totalPages:number=0;
   currentPage = 1;
-  public rowData: any[] = [];
+  public rowData: PatientViewModel[] = [];
 
   columnDefs: ColDef[] = [
     { field: 'id', headerName: 'Patient ID', flex: 1, filter: true },
-    { field: 'firstName', headerName: 'First Name', flex: 1, filter: true }, 
-    { field: 'lastName', headerName: 'Last Name', flex: 1, filter: true },
-    { field: 'gender', headerName: 'Gender', width: 100 },
+    { field: 'fullName', headerName: 'Full Name', flex: 1, filter: true }, 
     { field: 'bloodGroup', headerName: 'Blood Group', width: 120 },
     { field: 'contactNumber', headerName: 'Contact Number', flex: 1 },
     { field: 'address', headerName: 'Address', flex: 1 },
@@ -40,6 +43,7 @@ export class PatientComponent {
       headerName: 'Actions', 
       cellRenderer: (params: any) => {
 return `
+      
       <button class="btn btn-sm btn-outline-primary me-2" data-action="edit">
         <i class="bi bi-pencil"></i> Edit
       </button>
@@ -58,6 +62,9 @@ return `
     } else if (action === 'delete') {
       this.deletePatient(params.data.id);
     }
+    else if (action === 'View') {
+    this.viewPatient(params.data.id);
+  }
   }
     }
   ];
@@ -65,7 +72,7 @@ return `
   constructor(private fb: FormBuilder, private apiCallService:ApiCallService, private toastr:ToastrService) {
   }
   ngOnInit(){
-    this.getAllPatient();
+    this.getAllPatients();
     this.initForm();
 }
 
@@ -96,12 +103,12 @@ submitPatient() {
     return;
   }
 
-  const patientData:Patient=this.patientForm.value;
   if (this.isEditMode && this.selectedPatientId) {
-    this.apiCallService.updatePatient(this.selectedPatientId, patientData).subscribe(
+    const updatePatientData:UpdatePatientDto=this.patientForm.value;
+    this.apiCallService.updatePatient(this.selectedPatientId, updatePatientData).subscribe(
       res => {
         this.toastr.success("Patient Updated Successfully");
-        this.getAllPatient();
+        this.getAllPatients();
         this.closeModal();
       },
       err=>{
@@ -109,10 +116,11 @@ submitPatient() {
       }
     );
   } else {
-    this.apiCallService.addPatient(patientData).subscribe(
+    const addPatientData:AddPatientDto=this.patientForm.value;
+    this.apiCallService.addPatient(addPatientData).subscribe(
       res => {
         this.toastr.success("Patient Added Successfully");
-        this.getAllPatient();
+        this.getAllPatients();
         this.closeModal();
       },
       err => {
@@ -121,12 +129,39 @@ submitPatient() {
     );
   }
 }
- getAllPatient(page: number = 1){
+
+  viewPatient(id: string) {
+  this.apiCallService.getPatientById(id).subscribe(
+    res => {
+      this.patientForm.patchValue({
+        FirstName: res.firstName,
+        MiddleName: res.middleName,
+        LastName: res.lastName,
+        DateOfBirth: res.dateOfBirth,
+        BloodGroup: res.bloodGroup,
+        Gender: res.gender,
+        Address: res.address,
+        Email: res.email,
+        ContactNumber: res.contactNumber
+      });
+
+      this.patientForm.disable();
+      this.isEditMode = false;
+
+      this.opentModal();
+    },
+    err => {
+      this.toastr.error("Failed to load patient");
+    }
+  );
+}
+
+ getAllPatients(page: number = 1){
     this.apiCallService.getAllPatients(page, this.pageSize).subscribe(
       res=>{
-        this.PatientList=res.items;
-        this.rowData = res.items;
-        this.pageNumber = res.pageNumber;
+        this.patientList=res.items;
+        this.rowData = res.items.map(item =>
+                mapPatientDtoToViewModel(item));
         this.totalRecords = res.totalRecords;
         this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
         console.log(res);
@@ -169,7 +204,7 @@ submitPatient() {
     this.apiCallService.deletePatient(id).subscribe(
       res=>{
         this.toastr.success("Patient deleted successfully");
-        this.getAllPatient();
+        this.getAllPatients();
       },
       err=>{
         this.toastr.error("Failed to delete patient");
@@ -183,6 +218,7 @@ submitPatient() {
   openAddModal() {
   this.isEditMode = false;
   this.selectedPatientId = null;
+  this.patientForm.enable();
   this.patientForm.reset();
   this.opentModal();
 }
@@ -230,4 +266,3 @@ closeModal() {
   this.selectedPatientId = null;
 }
 }
-
