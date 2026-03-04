@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HIMS.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class dataseeding : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,6 +18,9 @@ namespace HIMS.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Specialization = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Department = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDefaultPasswordChanged = table.Column<bool>(type: "bit", nullable: false),
                     Qualification = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LicenseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HiringDate = table.Column<DateOnly>(type: "date", nullable: false),
@@ -95,6 +98,9 @@ namespace HIMS.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Salutation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDefaultPasswordChanged = table.Column<bool>(type: "bit", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
                     HiringDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Salary = table.Column<double>(type: "float", nullable: false),
@@ -228,7 +234,7 @@ namespace HIMS.Migrations
                         column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -262,7 +268,7 @@ namespace HIMS.Migrations
                         column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -336,8 +342,13 @@ namespace HIMS.Migrations
                         column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Staffs",
+                columns: new[] { "Id", "Address", "ContactNumber", "CreatedBy", "CreatedOn", "DateOfBirth", "Email", "FirstName", "Gender", "HiringDate", "IsActive", "IsDefaultPasswordChanged", "LastName", "MiddleName", "Password", "Role", "Salary", "Salutation", "UpdatedBy", "UpdatedOn", "Username" },
+                values: new object[] { new Guid("fcce0028-6e44-4cca-a17b-d3bf4c16f2b0"), "Kathmandu", "9800000000", new Guid("fcce0028-6e44-4cca-a17b-d3bf4c16f2b0"), new DateTime(2026, 3, 4, 7, 48, 17, 836, DateTimeKind.Utc).AddTicks(4322), new DateOnly(1995, 1, 1), "admin@hims.com", "System", "Male", new DateOnly(2024, 1, 1), true, false, "Admin", "", "AQAAAAIAAYagAAAAEPQPdfrBdsoUzXGGLFxzniWAFHkZFGN0rbCA6ZC5pz6gRMBuWeoztXWG9cxBtEpySw==", 9, 50000.0, "Mr.", null, null, "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_DoctorId",

@@ -6,9 +6,11 @@ namespace HIMS.Model.Core_People_Entities
     public class Doctor: People
     {
         public Guid Id { get; set; }
-
         public string Specialization { get; set; }
         public string Department { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public bool IsDefaultPasswordChanged { get; set; }
         public string Qualification { get; set; }
         public string LicenseNumber { get; set; }
         public DateOnly HiringDate { get; set; }

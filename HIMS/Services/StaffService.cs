@@ -6,6 +6,7 @@ using HIMS.Interfaces;
 using HIMS.Model.Core_People_Entities;
 using HIMS.Model.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Data;
@@ -99,12 +100,14 @@ namespace HIMS.Services
                 ContactNumber = staff.ContactNumber,
                 Email = staff.Email,
                 DateOfBirth = staff.DateOfBirth,
+                Username = staff.Username,
+                Password = new PasswordHasher<Staff>().HashPassword(null,"Nepal@123"), // Default password, should be changed on first login
                 Salutation = staff.Salutation,
                 Role = staff.Role,
                 HiringDate = staff.HiringDate,
                 Salary = staff.Salary,
-                
                 IsActive = true,
+                IsDefaultPasswordChanged = false,
                 CreatedOn = DateTime.UtcNow,
                 CreatedBy = staff.CreatedBy
             };
@@ -127,6 +130,9 @@ namespace HIMS.Services
                     DateOfBirth = staff.DateOfBirth,
                     HiringDate = staff.HiringDate,
                     Salary = staff.Salary,
+                    Username = staff.Username,
+                    Password = new PasswordHasher<Doctor>().HashPassword(null, "Nepal@123"), // Default password, should be changed on first login
+                    IsDefaultPasswordChanged = false,
                     IsActive = true,
                     Specialization = staff.Specialization,
                     Department = staff.Department,

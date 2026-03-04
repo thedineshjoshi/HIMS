@@ -1,4 +1,5 @@
-﻿namespace HIMS.Common
+﻿
+namespace HIMS.Common
 {
     public abstract class People
     {
@@ -17,7 +18,7 @@
             public Guid? UpdatedBy { get; set; }
             public DateTime? UpdatedOn { get; set; }
 
-            public virtual int GetAge()
+        public virtual int GetAge()
             {
                 return DateTime.Now.Year - DateOfBirth.Year;
             }

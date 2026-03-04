@@ -33,13 +33,13 @@
 
       <h2 class="form-title">Sign in</h2>
 
-      <form class="login-form">
+      <form class="login-form" [formGroup]="loginForm" (ngSubmit)="login()">
         <div class="input-field">
-          <input type="text" placeholder="Username" name="username">
+          <input type="text" placeholder="Username" name="username" formControlName="Username">
         </div>
         
         <div class="input-field">
-          <input type="password" placeholder="Password" name="password">
+          <input type="password" placeholder="Password" name="password" formControlName="Password">
         </div>
 
         <div class="form-options">

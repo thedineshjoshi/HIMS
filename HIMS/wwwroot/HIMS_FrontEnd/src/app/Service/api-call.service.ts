@@ -11,6 +11,7 @@ import { UpdatePatientDto } from '../../Models/DTOs/Patient/updatePatientDto';
 import { AddAppointmentDto } from '../../Models/DTOs/Appointment/addAppointmentDto';
 import { AppointmentDto } from '../../Models/DTOs/Appointment/appointmentDto';
 import { DoctorDto } from '../../Models/DTOs/Doctor/doctorDto';
+import { LoginDto } from '../../Models/DTOs/Login/LoginDto';
 
 
 @Injectable({
@@ -22,6 +23,7 @@ export class ApiCallService {
   private patientUrl = 'https://localhost:7082/api/Patient';
   private appointmentUrl = 'https://localhost:7082/api/Appointment';
   private doctorUrl = 'https://localhost:7082/api/Doctor';
+  private loginUrl = 'https://localhost:7082/api/Login'
 
   // Start Of Staff Service
   addStaff(staff:AddStaffDto):Observable<StaffDto>{
@@ -92,6 +94,11 @@ export class ApiCallService {
   //start of doctor service
   getDoctors():Observable<DoctorDto[]>{
     return this.http.get<DoctorDto[]>(`${this.doctorUrl}`,{responseType:'json'})
+  }
+
+  // start of authentication service
+  login(loginData:LoginDto):Observable<LoginDto>{
+    return this.http.post<LoginDto>(`${this.loginUrl}/login`,loginData)
   }
 
 

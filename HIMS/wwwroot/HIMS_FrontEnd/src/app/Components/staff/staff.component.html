@@ -152,6 +152,13 @@
 
               </div>
 
+              <div class="col-md-6">
+              <label class="form-label required-label">Username</label>
+              <input type="text" class="form-control" formControlName="Username">
+               <div *ngIf="addStaffForm.get('Username')?.touched && addStaffForm.get('Username')?.invalid" class="text-danger">
+                <small *ngIf="addStaffForm.get('Username')?.errors?.['required']">Username is required.</small>
+              </div>
+            </div>
 
             <div class="col-md-6">
               <label class="form-label required-label">Hiring Date</label>

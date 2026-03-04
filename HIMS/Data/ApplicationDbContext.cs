@@ -1,14 +1,18 @@
-﻿using HIMS.Model.Clinical_And_Scheduling_Entities;
+﻿
+using HIMS.Model.Clinical_And_Scheduling_Entities;
 using HIMS.Model.Core_People_Entities;
 using HIMS.Model.Dispensary;
+using HIMS.Model.Enums;
 using HIMS.Model.Facility_And_Operational_Entities;
 using HIMS.Model.Invoice_And_Bill;
 using HIMS.Model.Lab_Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HIMS.Data
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext: DbContext
     {
         public ApplicationDbContext()
         {
@@ -32,6 +36,33 @@ namespace HIMS.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            var adminId = Guid.NewGuid();
+            var passwordHasher = new PasswordHasher<Staff>();
+            modelBuilder.Entity<Staff>().HasData(
+                new Staff
+                {
+                    Id = adminId,
+                    Salutation = "Mr.",
+                    FirstName = "System",
+                    MiddleName = "",
+                    LastName = "Admin",
+                    Gender = "Male",
+                    Address = "Kathmandu",
+                    ContactNumber = "9800000000",
+                    Email = "admin@hims.com",
+                    Username = "admin",
+                    Password = passwordHasher.HashPassword(null,"Admin@123"),
+                    IsDefaultPasswordChanged = false,
+                    Role = Role_Enum.HRManager,
+                    HiringDate = new DateOnly(2024, 1, 1),
+                    Salary = 50000,
+                    IsActive = true,
+                    DateOfBirth = new DateOnly(1995, 1, 1),
+                    CreatedOn = DateTime.UtcNow,
+                    CreatedBy = adminId
+                }
+            );
+
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Doctor)
                 .WithMany(d => d.Appointments)
@@ -51,12 +82,14 @@ namespace HIMS.Data
             modelBuilder.Entity<MedicalRecord>()
                 .HasOne(mr => mr.Patient)
                 .WithMany(p => p.MedicalRecords)
-                .HasForeignKey(mr => mr.PatientId);
+                .HasForeignKey(mr => mr.PatientId)
+                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<LabTest>()
                 .HasOne(lt => lt.Patient)
                 .WithMany()
-                .HasForeignKey(lt => lt.PatientId);
+                .HasForeignKey(lt => lt.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<LabTest>()
                 .HasOne(lt => lt.Doctor)
@@ -71,7 +104,8 @@ namespace HIMS.Data
             modelBuilder.Entity<Prescription>()
                 .HasOne(pr => pr.Patient)
                 .WithMany(p => p.Prescriptions)
-                .HasForeignKey(pr => pr.PatientId);
+                .HasForeignKey(pr => pr.PatientId)
+                .OnDelete(DeleteBehavior.Restrict); ;
 
             modelBuilder.Entity<Prescription>()
                 .HasOne(pr => pr.Doctor)

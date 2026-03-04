@@ -112,6 +112,7 @@ export class StaffComponent implements OnInit {
         Role: ['', Validators.required],
         HiringDate: ['', Validators.required],
         Salary: ['', [Validators.required, Validators.min(0)]],
+        Username:['',[Validators.required,Validators.minLength(7)]],
         Specialization: [''],
         Department: [''],
         Qualification: [''],

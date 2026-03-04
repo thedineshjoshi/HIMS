@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HIMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260219142132_initial")]
-    partial class initial
+    [Migration("20260304074819_data-seeding")]
+    partial class dataseeding
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -228,6 +228,9 @@ namespace HIMS.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDefaultPasswordChanged")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -237,6 +240,10 @@ namespace HIMS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -256,6 +263,10 @@ namespace HIMS.Migrations
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -364,11 +375,18 @@ namespace HIMS.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDefaultPasswordChanged")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -388,9 +406,37 @@ namespace HIMS.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Staffs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("fcce0028-6e44-4cca-a17b-d3bf4c16f2b0"),
+                            Address = "Kathmandu",
+                            ContactNumber = "9800000000",
+                            CreatedBy = new Guid("fcce0028-6e44-4cca-a17b-d3bf4c16f2b0"),
+                            CreatedOn = new DateTime(2026, 3, 4, 7, 48, 17, 836, DateTimeKind.Utc).AddTicks(4322),
+                            DateOfBirth = new DateOnly(1995, 1, 1),
+                            Email = "admin@hims.com",
+                            FirstName = "System",
+                            Gender = "Male",
+                            HiringDate = new DateOnly(2024, 1, 1),
+                            IsActive = true,
+                            IsDefaultPasswordChanged = false,
+                            LastName = "Admin",
+                            MiddleName = "",
+                            Password = "AQAAAAIAAYagAAAAEPQPdfrBdsoUzXGGLFxzniWAFHkZFGN0rbCA6ZC5pz6gRMBuWeoztXWG9cxBtEpySw==",
+                            Role = 9,
+                            Salary = 50000.0,
+                            Salutation = "Mr.",
+                            Username = "admin"
+                        });
                 });
 
             modelBuilder.Entity("HIMS.Model.Dispensary.Medicine", b =>
@@ -653,7 +699,7 @@ namespace HIMS.Migrations
                     b.HasOne("HIMS.Model.Core_People_Entities.Patient", "Patient")
                         .WithMany("MedicalRecords")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Doctor");
@@ -676,7 +722,7 @@ namespace HIMS.Migrations
                     b.HasOne("HIMS.Model.Core_People_Entities.Patient", "Patient")
                         .WithMany("Prescriptions")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Doctor");
@@ -725,7 +771,7 @@ namespace HIMS.Migrations
                     b.HasOne("HIMS.Model.Core_People_Entities.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Doctor");

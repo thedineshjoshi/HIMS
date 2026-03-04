@@ -7,7 +7,7 @@ import { LoginComponent } from './Components/login/login.component';
 
 export const routes: Routes = [
     {
-    path: '',
+    path: 'HIMS',
     component: LayoutComponent,
     children: [
       { path: 'staff', component: StaffComponent },
@@ -17,6 +17,6 @@ export const routes: Routes = [
     ]
   },
   {
-    path:'login',component:LoginComponent
+    path:'',component:LoginComponent
   }
 ];

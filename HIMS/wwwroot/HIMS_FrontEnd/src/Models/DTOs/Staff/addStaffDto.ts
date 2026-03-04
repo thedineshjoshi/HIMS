@@ -15,4 +15,5 @@ export interface AddStaffDto{
     LicenseNumber?:string;
     HiringDate:string;
     Salary:number;
+    Username:string
 }

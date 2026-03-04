@@ -55,6 +55,7 @@ namespace HIMS.Controllers
             return Ok(appointment);
         }
 
+
         // PUT api/<AppointmentController>/5
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromQuery] AppointmentStatus_Enum status)
