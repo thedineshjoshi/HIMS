@@ -89,6 +89,11 @@ namespace HIMS.Services
 
         public async Task<CreateStaffResponseDto> AddStaffAsync(CreateStaffDto staff)
         {
+            bool isUsernameUnique = await db.Staffs.AnyAsync(s => s.Username == staff.Username);
+            if(isUsernameUnique == false)
+            {
+                throw new Exception("Username already exists. Please choose a different username.");
+            }
             var newStaff = new Staff
             {
                 Id = Guid.NewGuid(),
