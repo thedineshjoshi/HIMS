@@ -35,6 +35,13 @@ namespace HIMS.Controllers
             return Ok(appointment);
         }
 
+        [Route("doctor/{doctorId}")]
+        [HttpGet]
+        public async Task<IEnumerable> GetAppointmentsOfADocto(Guid doctorId)
+        {
+           return await _appointmentService.GetAppointmentsOfADoctorAsync(doctorId);   
+        }
+
         [HttpGet("check-patient")]
         public async Task<IActionResult> CheckPatient([FromQuery] PatientCheckDto dto)
         {

@@ -1,0 +1,2 @@
+E:\Dinesh\Programmings\HIMS\HIMS\wwwroot\HIMS_FrontEnd\src\app\Model\Patient.ts
+E:\Dinesh\Programmings\HIMS\HIMS\wwwroot\HIMS_FrontEnd\src\app\Model\Staff.ts

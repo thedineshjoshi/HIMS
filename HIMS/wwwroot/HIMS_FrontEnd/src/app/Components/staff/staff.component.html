@@ -77,7 +77,7 @@
                 <option>Other</option>
               </select>
               <div *ngIf="addStaffForm.get('Gender')?.touched && addStaffForm.get('Gender')?.invalid" class="text-danger">
-                <small *ngIf="addStaffForm.get('Gender')?.errors?.['required']">Salutation is required.</small>
+                <small *ngIf="addStaffForm.get('Gender')?.errors?.['required']">Gender is required.</small>
               </div>
             </div>
 

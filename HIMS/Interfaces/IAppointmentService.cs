@@ -9,6 +9,7 @@ namespace HIMS.Interfaces
     public interface IAppointmentService
     {
         Task<IEnumerable<GetAppointmentDto>> GetAllAppointmentsAsync();
+        Task<IEnumerable<GetAppointmentDto>> GetAppointmentsOfADoctorAsync(Guid doctorId);
         Task<GetAppointmentDto?> GetAppointmentByIdAsync(Guid id);
         Task<Patient?> CheckPatientExistsAsync(PatientCheckDto dto);
         Task<Guid> AddAppointmentAsync(CreateAppointmentDto dto);

@@ -3,6 +3,53 @@
      <app-sidebar></app-sidebar>
 
   <div class="main-content">
+    <div class="doctor-dashboard" *ngIf="role === 'Doctor'">
+
+  <h2>Doctor Dashboard</h2>
+
+  <div class="stats-container">
+
+    <div class="card">
+      <h3>Today's Appointments</h3>
+      <p>{{this.appointments.length}}</p>
+    </div>
+
+    <div class="card">
+      <h3>Pending Reports</h3>
+      <p>{{this.totalPendingAppointments}}</p>
+    </div>
+
+    <div class="card">
+      <h3>Completed Today</h3>
+      <p>{{this.totalCompletedAppointments}}</p>
+    </div>
+
+  </div>
+
+  <div class="appointments">
+
+    <h3>Today's Appointments</h3>
+
+    <table>
+      <tr>
+        <th>Patient</th>
+        <th>Time</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+
+      <tr *ngFor="let appointment of appointments">
+        <td>{{appointment.patientName}}</td>
+        <td>{{appointment.appointmentDate | date:'HH:mm' }}</td>
+        <td>{{appointment.status}}</td>
+        <td><button>Start</button></td>
+      </tr>
+
+    </table>
+
+  </div>
+
+</div>
     <router-outlet></router-outlet>
     </div>
 </div>

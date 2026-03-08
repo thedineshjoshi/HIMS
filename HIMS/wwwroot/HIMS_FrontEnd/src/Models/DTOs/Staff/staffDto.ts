@@ -16,4 +16,5 @@ export interface StaffDto{
   licenseNumber?: string;
   hiringDate: string;
   salary: number;
+  username:string;
 }

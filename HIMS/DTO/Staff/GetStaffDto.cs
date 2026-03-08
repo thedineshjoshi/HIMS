@@ -12,6 +12,7 @@ namespace HIMS.DTO.Staff
         public string Address { get; set; }
         public string ContactNumber { get; set; }
         public string Email { get; set; }
+        public string Username { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public string Salutation { get; set; }
         public Role_Enum Role { get; set; }

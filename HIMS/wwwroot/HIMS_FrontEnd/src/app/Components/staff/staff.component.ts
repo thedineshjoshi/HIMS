@@ -178,6 +178,7 @@ prevPage() {
     Gender: res.gender,
     Address: res.address,
     Email: res.email,
+    Username:res.username,
     ContactNumber: res.contactNumber,
     Role: res.role,
     HiringDate: res.hiringDate?.split('T')[0],

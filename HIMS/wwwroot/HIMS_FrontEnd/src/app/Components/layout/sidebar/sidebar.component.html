@@ -3,7 +3,7 @@
       <input type="text" placeholder="Search Menu Items..." />
     </div>
 
-    <ul class="menu">
+    <ul class="menu" *ngIf="role === 'HRManager'">
       <li>Dispensary</li>
       <li>Doctor</li>
       <li routerLink="/HIMS/appointment">Appointment</li>
@@ -11,5 +11,15 @@
       <li routerLink="/HIMS/staff">Staff</li>
       <li>Lab</li>
       <li>Billing</li>
+      <li (click)="Logout()">Logout</li>
     </ul>
+    
+    <ul class="menu" *ngIf="role === 'Doctor'">
+      <li routerLink="/HIMS/doctor-dashboard">Dashboard</li>
+      <li routerLink="/HIMS/my-appointments">My Appointments</li>
+      <li routerLink="/HIMS/patient">My Patients</li>
+      <li routerLink="/HIMS/prescription">Prescription</li>
+      <li (click)="Logout()">Logout</li>
+    </ul>
+    
   </div>

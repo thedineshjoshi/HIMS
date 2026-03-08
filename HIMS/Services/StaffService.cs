@@ -77,6 +77,7 @@ namespace HIMS.Services
                 Role = s.Role,
                 HiringDate = s.HiringDate,
                 Salary = s.Salary,
+                Username = s.Username,
                 CreatedOn = s.CreatedOn,
                 UpdatedOn = s.UpdatedOn
             }).FirstOrDefaultAsync();
@@ -90,7 +91,7 @@ namespace HIMS.Services
         public async Task<CreateStaffResponseDto> AddStaffAsync(CreateStaffDto staff)
         {
             bool isUsernameUnique = await db.Staffs.AnyAsync(s => s.Username == staff.Username);
-            if(isUsernameUnique == false)
+            if(isUsernameUnique == true)
             {
                 throw new Exception("Username already exists. Please choose a different username.");
             }

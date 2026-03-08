@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HIMS.Migrations
 {
     /// <inheritdoc />
-    public partial class dataseeding : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -348,7 +348,7 @@ namespace HIMS.Migrations
             migrationBuilder.InsertData(
                 table: "Staffs",
                 columns: new[] { "Id", "Address", "ContactNumber", "CreatedBy", "CreatedOn", "DateOfBirth", "Email", "FirstName", "Gender", "HiringDate", "IsActive", "IsDefaultPasswordChanged", "LastName", "MiddleName", "Password", "Role", "Salary", "Salutation", "UpdatedBy", "UpdatedOn", "Username" },
-                values: new object[] { new Guid("fcce0028-6e44-4cca-a17b-d3bf4c16f2b0"), "Kathmandu", "9800000000", new Guid("fcce0028-6e44-4cca-a17b-d3bf4c16f2b0"), new DateTime(2026, 3, 4, 7, 48, 17, 836, DateTimeKind.Utc).AddTicks(4322), new DateOnly(1995, 1, 1), "admin@hims.com", "System", "Male", new DateOnly(2024, 1, 1), true, false, "Admin", "", "AQAAAAIAAYagAAAAEPQPdfrBdsoUzXGGLFxzniWAFHkZFGN0rbCA6ZC5pz6gRMBuWeoztXWG9cxBtEpySw==", 9, 50000.0, "Mr.", null, null, "admin" });
+                values: new object[] { new Guid("b2728e0c-6d49-47ea-a007-49d65ebe96d8"), "Kathmandu", "9800000000", new Guid("b2728e0c-6d49-47ea-a007-49d65ebe96d8"), new DateTime(2026, 3, 4, 10, 43, 9, 143, DateTimeKind.Utc).AddTicks(4284), new DateOnly(1995, 1, 1), "admin@hims.com", "System", "Male", new DateOnly(2024, 1, 1), true, false, "Admin", "", "AQAAAAIAAYagAAAAEGA/vYOELvq0ukgwDVRgG9DKqEomoDIV3VMg9SHN/YcR4urQ/pSPcyaL5N32xp1a/Q==", 9, 50000.0, "Mr.", null, null, "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_DoctorId",

@@ -36,12 +36,29 @@ namespace HIMS.Services
             {
                 throw new Exception("Invalid username or password.");
             }
-            var authClaims = new List<Claim>
+            List<Claim> authClaims;
+            if (user.Role == Model.Enums.Role_Enum.Doctor) {
+                var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Username == user.Username);
+                if (doctor == null)
+                {
+                    throw new Exception("Associated doctor record not found.");
+                }
+            
+                 authClaims = new List<Claim>
+                 {
+                     new Claim("UserName",user.Username),
+                     new Claim("UserId",doctor.Id.ToString()),
+                     new Claim("Role",user.Role.ToString())
+                 };
+            }
+            else {                 
+                     authClaims = new List<Claim>
                  {
                      new Claim("UserName",user.Username),
                      new Claim("UserId",user.Id.ToString()),
                      new Claim("Role",user.Role.ToString())
                  };
+            }
             var secret = _configuration["Jwt:Key"];
             if (string.IsNullOrEmpty(secret))
             {

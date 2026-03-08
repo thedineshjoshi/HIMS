@@ -167,5 +167,25 @@ namespace HIMS.Services
                 Message = "Appointment Deleted Successfully",
             };
         }
+
+        public async Task<IEnumerable<GetAppointmentDto>> GetAppointmentsOfADoctorAsync(Guid doctorId)
+        {
+            var today = DateTime.Today;
+            var appointments = await db.Appointments.Where(a => a.DoctorId == doctorId && a.AppointmentDate.Date == today && a.IsActive == true)
+                .Select(a => new GetAppointmentDto
+                {
+                    Id = a.Id,
+                    AppointmentDate = a.AppointmentDate,
+                    ReasonForVisit = a.ReasonForVisit,
+                    Status = a.Status.ToString(),
+                    PatientId = a.PatientId,
+                    PatientName = $"{a.Patient.FirstName} {a.Patient.LastName}",
+                    PatientContact = a.Patient.ContactNumber
+                })
+                .ToListAsync();
+
+            return appointments;
+
+        }
     }
 }

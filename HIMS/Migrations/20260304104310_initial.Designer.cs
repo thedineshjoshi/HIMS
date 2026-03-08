@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HIMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260304074819_data-seeding")]
-    partial class dataseeding
+    [Migration("20260304104310_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -417,11 +417,11 @@ namespace HIMS.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("fcce0028-6e44-4cca-a17b-d3bf4c16f2b0"),
+                            Id = new Guid("b2728e0c-6d49-47ea-a007-49d65ebe96d8"),
                             Address = "Kathmandu",
                             ContactNumber = "9800000000",
-                            CreatedBy = new Guid("fcce0028-6e44-4cca-a17b-d3bf4c16f2b0"),
-                            CreatedOn = new DateTime(2026, 3, 4, 7, 48, 17, 836, DateTimeKind.Utc).AddTicks(4322),
+                            CreatedBy = new Guid("b2728e0c-6d49-47ea-a007-49d65ebe96d8"),
+                            CreatedOn = new DateTime(2026, 3, 4, 10, 43, 9, 143, DateTimeKind.Utc).AddTicks(4284),
                             DateOfBirth = new DateOnly(1995, 1, 1),
                             Email = "admin@hims.com",
                             FirstName = "System",
@@ -431,7 +431,7 @@ namespace HIMS.Migrations
                             IsDefaultPasswordChanged = false,
                             LastName = "Admin",
                             MiddleName = "",
-                            Password = "AQAAAAIAAYagAAAAEPQPdfrBdsoUzXGGLFxzniWAFHkZFGN0rbCA6ZC5pz6gRMBuWeoztXWG9cxBtEpySw==",
+                            Password = "AQAAAAIAAYagAAAAEGA/vYOELvq0ukgwDVRgG9DKqEomoDIV3VMg9SHN/YcR4urQ/pSPcyaL5N32xp1a/Q==",
                             Role = 9,
                             Salary = 50000.0,
                             Salutation = "Mr.",

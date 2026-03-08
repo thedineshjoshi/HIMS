@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Patient } from '../Model/Patient';
 import { AddStaffDto } from '../../Models/DTOs/Staff/addStaffDto';
 import { StaffDto } from '../../Models/DTOs/Staff/staffDto';
 import { UpdateStaffDto } from '../../Models/DTOs/Staff/updateStaffDto';
@@ -12,6 +11,7 @@ import { AddAppointmentDto } from '../../Models/DTOs/Appointment/addAppointmentD
 import { AppointmentDto } from '../../Models/DTOs/Appointment/appointmentDto';
 import { DoctorDto } from '../../Models/DTOs/Doctor/doctorDto';
 import { LoginDto } from '../../Models/DTOs/Login/LoginDto';
+import { AppointmentViewModel } from '../../Models/ViewModels/appointmentViewModel';
 
 
 @Injectable({
@@ -81,6 +81,10 @@ export class ApiCallService {
     return this.http.get<AppointmentDto[]>(`${this.appointmentUrl}`);
   }
 
+  getAppointmentsOfDoctor(doctorId:string):Observable<AppointmentViewModel[]>{
+    return this.http.get<AppointmentViewModel[]>(`${this.appointmentUrl}/doctor/${doctorId}`)
+  }
+
   updateAppointmentStatus(id: string, newStatus: string): Observable<AppointmentDto> {
     return this.http.patch<AppointmentDto>(`${this.appointmentUrl}/${id}?status=${newStatus}`,{});
   }
@@ -97,10 +101,8 @@ export class ApiCallService {
   }
 
   // start of authentication service
-  login(loginData:LoginDto):Observable<LoginDto>{
-    return this.http.post<LoginDto>(`${this.loginUrl}/login`,loginData)
+  login(loginData:LoginDto):Observable<any>{
+    return this.http.post<any>(`${this.loginUrl}/login`,loginData)
   }
-
-
 
 }

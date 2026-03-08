@@ -31,3 +31,56 @@
   min-height: calc(100vh - 60px);
   background: #f4f6f9;
 }
+
+
+.doctor-dashboard{
+padding:20px;
+}
+
+.stats-container{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:30px;
+margin-bottom:30px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+text-align:center;
+}
+
+.card h3{
+font-size:16px;
+color:#666;
+}
+
+.card p{
+font-size:28px;
+font-weight:bold;
+color:#2a6db3;
+}
+
+table{
+width:100%;
+background:white;
+border-radius:10px;
+overflow:hidden;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+text-align:left;
+}
+
+button{
+background:#2a6db3;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:5px;
+cursor:pointer;
+}
