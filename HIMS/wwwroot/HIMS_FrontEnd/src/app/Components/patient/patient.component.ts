@@ -211,8 +211,7 @@ submitPatient() {
     )
 
   }
-
-  }
+}
 
   openAddModal() {
   this.isEditMode = false;

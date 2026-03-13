@@ -19,10 +19,12 @@ export class LayoutComponent {
   totalCompletedAppointments:number=0;
   role:string='';
   userId:string='';
+  username:string='';
   ngOnInit(){
       this.getRole();
       this.getUserId();
       this.getAppointments();
+      this.getUsername();
     }
     constructor(private authService:AuthService, private apiCallService:ApiCallService){}
 
@@ -32,6 +34,10 @@ export class LayoutComponent {
 
   getUserId(){
     this.userId = this.authService.decodeToken().UserId;
+  }
+
+  getUsername(){
+    this.username = this.authService.decodeToken().UserName;
   }
 
   getAppointments(){
